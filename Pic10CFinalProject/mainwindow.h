@@ -82,10 +82,15 @@ class Player
 {
 public:
     Player();
+
+    void buildMine();
+    void buildFarm();
+
     void updateMoney(QLabel* label);
     void updateFood(QLabel* label);
     void updateMine(QLabel* label);
     void updateFarm(QLabel* label);
+
 
 
 private:

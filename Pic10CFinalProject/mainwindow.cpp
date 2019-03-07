@@ -99,6 +99,16 @@ TownCenter::TownCenter()
 
 Player::Player():money(100), food(100), mine_count(0), farm_count(0), unit_list(0) {}
 
+void Player::buildMine()
+{
+    mine_count += 1;
+}
+
+void Player::buildFarm()
+{
+    farm_count += 1;
+}
+
 void Player::updateMoney(QLabel* label)
 {
     QString text("Money: " + QString::number(money));
