@@ -96,6 +96,34 @@ TownCenter::TownCenter()
 }
 
 
+
+Player::Player():money(100), food(100), mine_count(0), farm_count(0), unit_list(0) {}
+
+void Player::updateMoney(QLabel* label)
+{
+    QString text("Money: " + QString::number(money));
+    label->setText(text);
+}
+
+void Player::updateFood(QLabel* label)
+{
+    QString text("Food: " + QString::number(food));
+    label->setText(text);
+}
+
+void Player::updateMine(QLabel* label)
+{
+    QString text("Mine Count: "+ QString::number(mine_count));
+    label->setText(text);
+}
+
+void Player::updateFarm(QLabel* label)
+{
+    QString text("Farm Count: " + QString::number(farm_count));
+    label->setText(text);
+}
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -107,3 +135,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
+

@@ -12,6 +12,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     QStackedWidget *control_window = new QStackedWidget;
+
+    Player player1;
+    Player player2;
+
+
     QWidget *player_one_info = new QWidget;
     QWidget *player_two_info = new QWidget;
     QButtonGroup *end_turn_buttons = new QButtonGroup;
@@ -19,11 +24,17 @@ int main(int argc, char *argv[])
 
     QVBoxLayout *player_one_lay = new QVBoxLayout;
     QLabel *p1_label = new QLabel("Player 1 turn");
-    QLabel *p1_money_label = new QLabel("Money: 100");
-    QLabel *p1_food_label = new QLabel("Food: 100");
-    QLabel *p1_mine_label = new QLabel("Mine Count: 0");
-    QLabel *p1_farm_label = new QLabel("Farm Count: 0");
+    QLabel *p1_money_label = new QLabel;
+    QLabel *p1_food_label = new QLabel;
+    QLabel *p1_mine_label = new QLabel;
+    QLabel *p1_farm_label = new QLabel;
     QPushButton *p1_end_turn_button = new QPushButton("End Turn");
+
+    player1.updateMoney(p1_money_label);
+    player1.updateFood(p1_food_label);
+    player1.updateMine(p1_mine_label);
+    player1.updateFarm(p1_farm_label);
+
 
     QVBoxLayout *player_two_lay = new QVBoxLayout;
     QLabel *p2_label = new QLabel("Player 2 turn");
@@ -32,6 +43,11 @@ int main(int argc, char *argv[])
     QLabel *p2_mine_label = new QLabel("Mine Count: 0");
     QLabel *p2_farm_label = new QLabel("Farm Count: 0");
     QPushButton *p2_end_turn_button = new QPushButton("End Turn");
+
+    player2.updateMoney(p2_money_label);
+    player2.updateFood(p2_food_label);
+    player2.updateMine(p2_mine_label);
+    player2.updateFarm(p2_farm_label);
 
     end_turn_buttons->addButton(p1_end_turn_button,1);
     end_turn_buttons->addButton(p2_end_turn_button,0);

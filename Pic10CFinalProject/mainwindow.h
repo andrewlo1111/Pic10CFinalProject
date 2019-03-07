@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <string>
 #include <vector>
+#include <QLabel>
 
 class Unit
 {
@@ -81,11 +82,17 @@ class Player
 {
 public:
     Player();
+    void updateMoney(QLabel* label);
+    void updateFood(QLabel* label);
+    void updateMine(QLabel* label);
+    void updateFarm(QLabel* label);
+
+
 private:
     int money;
     int food;
-    int mine_count = 0;
-    int farm_count = 0;
+    int mine_count;
+    int farm_count;
     std::vector<Unit> unit_list;
 
 };
@@ -102,8 +109,14 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
+
 private:
     Ui::MainWindow *ui;
+
+
 };
+
+
 
 #endif // MAINWINDOW_H
