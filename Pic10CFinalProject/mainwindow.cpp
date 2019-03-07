@@ -97,16 +97,66 @@ TownCenter::TownCenter()
 
 
 
-Player::Player():money(100), food(100), mine_count(0), farm_count(0), unit_list(0) {}
+Player::Player():money(100), food(100), mine_count(0), farm_count(0), unit_list(0)
+{
+    QLabel *money_label = new QLabel("Money: 100");
+    QLabel *food_label = new QLabel("Food: 100");
+    QLabel *mine_label = new QLabel("Mines: 0");
+    QLabel *farm_label = new QLabel("Farms: 0");
+
+    label_arr.push_back(money_label);
+    label_arr.push_back(food_label);
+    label_arr.push_back(mine_label);
+    label_arr.push_back(farm_label);
+}
 
 void Player::buildMine()
 {
     mine_count += 1;
+    QString text("Mines: " + QString::number(mine_count));
+    label_arr[2]->setText(text);
 }
 
 void Player::buildFarm()
 {
     farm_count += 1;
+    QString text("Farms: " + QString::number(farm_count));
+    label_arr[3]->setText(text);
+}
+
+int Player::get_money()
+{
+    return money;
+}
+
+int Player::get_food()
+{
+    return food;
+}
+
+int Player::get_mine_count()
+{
+    return mine_count;
+}
+
+int Player::get_farm_count()
+{
+    return farm_count;
+}
+
+std::vector<QLabel*> Player::get_label_arr()
+{
+    return label_arr;
+}
+
+void Player::add_money(int amount)
+{
+    money += amount;
+}
+
+void Player::add_food(int amount)
+{
+    food += amount;
 }
 
 void Player::updateMoney(QLabel* label)
@@ -134,11 +184,114 @@ void Player::updateFarm(QLabel* label)
 }
 
 
+void MainWindow::end_turn_rewards(int player)
+{
+    if (player == 0)
+    {
+        p1.add_money(p1.get_mine_count() * 100);
+        p1.add_food(p1.get_farm_count() * 100);
+    }
+    if (player == 1)
+    {
+        p2.add_money(p2.get_mine_count() * 100);
+        p2.add_food(p2.get_farm_count() * 100);
+    }
+}
+
+void MainWindow::update_labels(int player)
+{
+    if(player == 0)
+    {
+        QString money_text("Money: " + QString::number(p1.get_money()));
+        QString food_text("Food: " + QString::number(p1.get_food()));
+        QString mine_text("Mines: " + QString::number(p1.get_mine_count()));
+        QString farm_text("Farms: " + QString::number(p1.get_farm_count()));
+
+        QString text_arr[4] = {money_text, food_text, mine_text, farm_text};
+
+        std::vector<QLabel*> label_vector = p1.get_label_arr();
+
+        for(int i=0;i<4;i++)
+        {
+            label_vector[0]->setText(text_arr[0]);
+        }
+    }
+
+    if(player == 1)
+    {
+        QString money_text("Money: " + QString::number(p2.get_money()));
+        QString food_text("Food: " + QString::number(p2.get_food()));
+        QString mine_text("Mines: " + QString::number(p2.get_mine_count()));
+        QString farm_text("Farms: " + QString::number(p2.get_farm_count()));
+
+        QString text_arr[4] = {money_text, food_text, mine_text, farm_text};
+
+        std::vector<QLabel*> label_vector = p2.get_label_arr();
+
+        for(int i=0;i<4;i++)
+        {
+            label_vector[0]->setText(text_arr[0]);
+        }
+    }
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    QStackedWidget *control_window = new QStackedWidget;
+
+    p1.buildMine();
+    p1.buildFarm();
+
+    QWidget *player_one_info = new QWidget;
+    QWidget *player_two_info = new QWidget;
+    QButtonGroup *end_turn_buttons = new QButtonGroup;
+
+    QVBoxLayout *player_one_lay = new QVBoxLayout;
+    QLabel *p1_label = new QLabel("Player 1 turn");
+    QPushButton *p1_end_turn_button = new QPushButton("End Turn");
+
+
+
+    QVBoxLayout *player_two_lay = new QVBoxLayout;
+    QLabel *p2_label = new QLabel("Player 2 turn");
+    QPushButton *p2_end_turn_button = new QPushButton("End Turn");
+
+    end_turn_buttons->addButton(p1_end_turn_button,1);
+    end_turn_buttons->addButton(p2_end_turn_button,0);
+
+    player_one_lay->addWidget(p1_label);
+    for(int i= 0;i<4;i++)
+    {
+        player_one_lay->addWidget(p1.get_label_arr()[i]);
+    }
+    player_one_lay->addWidget(p1_end_turn_button);
+
+    player_one_info->setLayout(player_one_lay);
+
+
+    player_two_lay->addWidget(p2_label);
+    for(int i=0;i<4;i++)
+    {
+        player_two_lay->addWidget(p2.get_label_arr()[i]);
+    }
+    player_two_lay->addWidget(p2_end_turn_button);
+
+    player_two_info->setLayout(player_two_lay);
+
+
+    control_window->setWindowTitle("Player Info");
+    control_window->addWidget(player_one_info);
+    control_window->addWidget(player_two_info);
+
+
+    QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),control_window,SLOT(setCurrentIndex(int)));
+    QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),this, SLOT(end_turn_rewards(int)));
+    QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)), this, SLOT(update_labels(int)));
+    control_window->setGeometry(200,200,200,200);
+    control_window->show();
 }
 
 MainWindow::~MainWindow()

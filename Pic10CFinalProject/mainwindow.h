@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 #include <QLabel>
+#include <QStackedWidget>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QButtonGroup>
 
 class Unit
 {
@@ -78,6 +82,9 @@ public:
     TownCenter();
 };
 
+
+
+
 class Player
 {
 public:
@@ -85,6 +92,16 @@ public:
 
     void buildMine();
     void buildFarm();
+
+    int get_money();
+    int get_food();
+    int get_mine_count();
+    int get_farm_count();
+    std::vector<QLabel*> get_label_arr();
+
+
+    void add_money(int amount);
+    void add_food(int amount);
 
     void updateMoney(QLabel* label);
     void updateFood(QLabel* label);
@@ -98,6 +115,7 @@ private:
     int food;
     int mine_count;
     int farm_count;
+    std::vector<QLabel*> label_arr;
     std::vector<Unit> unit_list;
 
 };
@@ -114,10 +132,14 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-
+public slots:
+    void end_turn_rewards(int player);        //int passed determines which player gets the benefit
+    void update_labels(int player);
 
 private:
     Ui::MainWindow *ui;
+    Player p1;
+    Player p2;
 
 
 };
