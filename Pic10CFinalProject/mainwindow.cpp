@@ -213,7 +213,7 @@ void MainWindow::update_labels(int player)
 
         for(int i=0;i<4;i++)
         {
-            label_vector[0]->setText(text_arr[0]);
+            label_vector[i]->setText(text_arr[i]);
         }
     }
 
@@ -230,7 +230,7 @@ void MainWindow::update_labels(int player)
 
         for(int i=0;i<4;i++)
         {
-            label_vector[0]->setText(text_arr[0]);
+            label_vector[i]->setText(text_arr[i]);
         }
     }
 }
@@ -244,6 +244,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     p1.buildMine();
     p1.buildFarm();
+
+    p2.buildFarm();
 
     QWidget *player_one_info = new QWidget;
     QWidget *player_two_info = new QWidget;
