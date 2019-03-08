@@ -276,41 +276,67 @@ MainWindow::MainWindow(QWidget *parent) :
 
     p1.buildMine();
     p1.buildFarm();
-
     p2.buildFarm();
 
     QWidget *player_one_info = new QWidget;
     QWidget *player_two_info = new QWidget;
     QButtonGroup *end_turn_buttons = new QButtonGroup;
 
+    //player one layout with labels and buttons
     QVBoxLayout *player_one_lay = new QVBoxLayout;
+    QHBoxLayout *p1_food_money_lay = new QHBoxLayout;
+    QHBoxLayout *p1_farm_mine_lay = new QHBoxLayout;
     QLabel *p1_label = new QLabel("Player 1 turn");
     QPushButton *p1_end_turn_button = new QPushButton("End Turn");
 
 
-
+    //player two layout with labels and buttons
     QVBoxLayout *player_two_lay = new QVBoxLayout;
+    QHBoxLayout *p2_food_money_lay = new QHBoxLayout;
+    QHBoxLayout *p2_farm_mine_lay = new QHBoxLayout;
     QLabel *p2_label = new QLabel("Player 2 turn");
     QPushButton *p2_end_turn_button = new QPushButton("End Turn");
 
+    //added two buttons to the button group to change stacked widget index later
     end_turn_buttons->addButton(p1_end_turn_button,1);
     end_turn_buttons->addButton(p2_end_turn_button,0);
 
+    //player one adding additional labels
     player_one_lay->addWidget(p1_label);
-    for(int i= 0;i<4;i++)
+    for(unsigned int i= 0;i<4;i++)
     {
-        player_one_lay->addWidget(p1.get_label_arr()[i]);
+        if(i < 2)
+        {
+            p1_food_money_lay->addWidget(p1.get_label_arr()[i]);
+        }
+        else
+        {
+            p1_farm_mine_lay->addWidget(p1.get_label_arr()[i]);
+        }
     }
+    player_one_lay->addLayout(p1_food_money_lay);
+    player_one_lay->addLayout(p1_farm_mine_lay);
     player_one_lay->addWidget(p1_end_turn_button);
 
     player_one_info->setLayout(player_one_lay);
 
-
+    //player two adding additional labels
     player_two_lay->addWidget(p2_label);
-    for(int i=0;i<4;i++)
+    for(unsigned int i=0;i<4;i++)
     {
-        player_two_lay->addWidget(p2.get_label_arr()[i]);
+        if(i<2)
+        {
+            p2_food_money_lay->addWidget(p2.get_label_arr()[i]);
+        }
+        else
+        {
+            p2_farm_mine_lay->addWidget(p2.get_label_arr()[i]);
+        }
+
     }
+
+    player_two_lay->addLayout(p2_food_money_lay);
+    player_two_lay->addLayout(p2_farm_mine_lay);
     player_two_lay->addWidget(p2_end_turn_button);
 
     player_two_info->setLayout(player_two_lay);

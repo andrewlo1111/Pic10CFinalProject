@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QStackedWidget>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QPushButton>
 #include <QButtonGroup>
 
