@@ -268,6 +268,8 @@ void MainWindow::update_labels(int player)
     }
 }
 
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -287,6 +289,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QVBoxLayout *player_one_lay = new QVBoxLayout;
     QHBoxLayout *p1_food_money_lay = new QHBoxLayout;
     QHBoxLayout *p1_farm_mine_lay = new QHBoxLayout;
+
     QLabel *p1_label = new QLabel("Player 1 turn");
     p1_label->setAlignment(Qt::AlignCenter);
     QFont font = p1_label->font();
@@ -295,16 +298,35 @@ MainWindow::MainWindow(QWidget *parent) :
     p1_label->setFont(font);
 
     QPushButton *p1_end_turn_button = new QPushButton("End Turn");
+    QPushButton *p1_train_unit_button = new QPushButton("Train Unit");
+
+    QLabel *select_unit_label = new QLabel("Select Unit: ");
+    QComboBox *select_unit = new QComboBox;
+    select_unit->addItem("Villager");
+    select_unit->addItem("Warrior");
+    select_unit->addItem("Archer");
+    select_unit->addItem("Knight");
 
 
     //player two layout with labels and buttons
     QVBoxLayout *player_two_lay = new QVBoxLayout;
     QHBoxLayout *p2_food_money_lay = new QHBoxLayout;
     QHBoxLayout *p2_farm_mine_lay = new QHBoxLayout;
+
     QLabel *p2_label = new QLabel("Player 2 turn");
     p2_label->setAlignment(Qt::AlignCenter);
     p2_label->setFont(font);
+
     QPushButton *p2_end_turn_button = new QPushButton("End Turn");
+    QLabel *select_unit_label2 = new QLabel("Select Unit: ");
+    QComboBox *select_unit2 = new QComboBox;
+    select_unit2->addItem("Villager");
+    select_unit2->addItem("Warrior");
+    select_unit2->addItem("Archer");
+    select_unit2->addItem("Knight");
+    QPushButton *p2_train_unit_button = new QPushButton("Train Unit");   //confirms whatever is selected on combo box
+
+
 
     //added two buttons to the button group to change stacked widget index later
     end_turn_buttons->addButton(p1_end_turn_button,1);
@@ -325,7 +347,11 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     player_one_lay->addLayout(p1_food_money_lay);
     player_one_lay->addLayout(p1_farm_mine_lay);
+    player_one_lay->addWidget(select_unit_label);
+    player_one_lay->addWidget(select_unit);
+    player_one_lay->addWidget(p1_train_unit_button);
     player_one_lay->addWidget(p1_end_turn_button);
+
 
     player_one_info->setLayout(player_one_lay);
 
@@ -346,9 +372,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     player_two_lay->addLayout(p2_food_money_lay);
     player_two_lay->addLayout(p2_farm_mine_lay);
+    player_two_lay->addWidget(select_unit_label2);
+    player_two_lay->addWidget(select_unit2);
+    player_two_lay->addWidget(p2_train_unit_button);
     player_two_lay->addWidget(p2_end_turn_button);
 
+
     player_two_info->setLayout(player_two_lay);
+
 
 
     control_window->setWindowTitle("Player Info");
