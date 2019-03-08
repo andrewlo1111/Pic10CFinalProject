@@ -216,6 +216,7 @@ void Player::updateFarm(QLabel* label)
 }
 
 
+
 void MainWindow::end_turn_rewards(int player)
 {
     if (player == 0)
@@ -287,6 +288,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QHBoxLayout *p1_food_money_lay = new QHBoxLayout;
     QHBoxLayout *p1_farm_mine_lay = new QHBoxLayout;
     QLabel *p1_label = new QLabel("Player 1 turn");
+    p1_label->setAlignment(Qt::AlignCenter);
+    QFont font = p1_label->font();
+    font.setBold(true);
+    font.setPointSize(10);
+    p1_label->setFont(font);
+
     QPushButton *p1_end_turn_button = new QPushButton("End Turn");
 
 
@@ -295,6 +302,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QHBoxLayout *p2_food_money_lay = new QHBoxLayout;
     QHBoxLayout *p2_farm_mine_lay = new QHBoxLayout;
     QLabel *p2_label = new QLabel("Player 2 turn");
+    p2_label->setAlignment(Qt::AlignCenter);
+    p2_label->setFont(font);
     QPushButton *p2_end_turn_button = new QPushButton("End Turn");
 
     //added two buttons to the button group to change stacked widget index later
@@ -324,7 +333,7 @@ MainWindow::MainWindow(QWidget *parent) :
     player_two_lay->addWidget(p2_label);
     for(unsigned int i=0;i<4;i++)
     {
-        if(i<2)
+        if(i < 2)
         {
             p2_food_money_lay->addWidget(p2.get_label_arr()[i]);
         }
@@ -350,7 +359,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),control_window,SLOT(setCurrentIndex(int)));
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),this, SLOT(end_turn_rewards(int)));
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)), this, SLOT(update_labels(int)));
-    control_window->setGeometry(200,200,200,200);
+    control_window->setGeometry(300,200,300,200);
     control_window->show();
 }
 

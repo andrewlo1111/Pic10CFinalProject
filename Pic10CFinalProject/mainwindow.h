@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+
 #include <QMainWindow>
 #include <string>
 #include <vector>
@@ -10,6 +11,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QButtonGroup>
+
 
 class Unit
 {
@@ -23,8 +25,6 @@ protected:
     double attack;
     double defense;
     bool done = false;
-private:
-
 
 };
 
