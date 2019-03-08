@@ -21,12 +21,13 @@ protected:
     std::string unit_type;
     double attack;
     double defense;
-private:
     bool done = false;
+private:
+
 
 };
 
-class Villager:Unit
+class Villager: public Unit
 {
 public:
     Villager();
@@ -34,19 +35,19 @@ public:
 
 };
 
-class Warrior:Unit
+class Warrior:public Unit
 {
 public:
     Warrior();
 };
 
-class Archer:Unit
+class Archer:public Unit
 {
 public:
     Archer();
 };
 
-class Knight:Unit
+class Knight:public Unit
 {
 public:
     Knight();
@@ -88,6 +89,8 @@ public:
 class Player
 {
 public:
+    enum possible_unit {villager, warrior, archer, knight};
+
     Player();
 
     void buildMine();
@@ -102,6 +105,7 @@ public:
 
     void add_money(int amount);
     void add_food(int amount);
+    void train_unit(possible_unit new_unit);
 
     void updateMoney(QLabel* label);
     void updateFood(QLabel* label);

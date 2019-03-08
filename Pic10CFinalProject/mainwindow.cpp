@@ -159,6 +159,38 @@ void Player::add_food(int amount)
     food += amount;
 }
 
+void Player::train_unit(possible_unit new_unit)
+{
+    switch(new_unit)
+    {
+    case(villager):
+    {
+        Villager v1;
+        unit_list.push_back(v1);
+        break;
+    }
+    case(warrior):
+    {
+        Warrior w1;
+        unit_list.push_back(w1);
+        break;
+    }
+    case(archer):
+    {
+        Archer a1;
+        unit_list.push_back(a1);
+        break;
+    }
+    case(knight):
+    {
+        Knight k1;
+        unit_list.push_back(k1);
+        break;
+    }
+    }
+
+}
+
 void Player::updateMoney(QLabel* label)
 {
     QString text("Money: " + QString::number(money));
