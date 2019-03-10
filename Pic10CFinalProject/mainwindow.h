@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <QButtonGroup>
 #include <QComboBox>
+#include <QPainter>
 
 
 class Unit
@@ -140,6 +141,7 @@ public:
 public slots:
     void end_turn_rewards(int player);        //int passed determines which player gets the benefit
     void update_labels(int player);
+    void drawMap(QPaintEvent *e);
 
 private:
     Ui::MainWindow *ui;
