@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QWidget>
 #include <QMainWindow>
 #include <string>
 #include <vector>
@@ -141,7 +142,7 @@ public:
 public slots:
     void end_turn_rewards(int player);        //int passed determines which player gets the benefit
     void update_labels(int player);
-    void drawMap(QPaintEvent *e);
+    void paintEvent(QPaintEvent *e);
 
 private:
     Ui::MainWindow *ui;

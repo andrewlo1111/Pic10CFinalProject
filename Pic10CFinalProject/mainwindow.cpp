@@ -268,12 +268,18 @@ void MainWindow::update_labels(int player)
     }
 }
 
-void MainWindow::drawMap(QPaintEvent *e)
+void MainWindow::paintEvent(QPaintEvent *e)
 {
+    Q_UNUSED(e);
     QPainter painter(this);
     QPen pen(Qt::black, 2, Qt::SolidLine);
     painter.setPen(pen);
-    painter.drawLine(20, 40, 250, 40);
+    for(int i= 1; i<6;i++)
+    {
+        painter.drawLine(0, i*50, 1000, i*50);
+        painter.drawLine(i*50, 0, i*50, 1000);
+
+    }
 }
 
 MainWindow::MainWindow(QWidget *parent) :
