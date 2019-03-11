@@ -13,6 +13,7 @@
 #include <QButtonGroup>
 #include <QComboBox>
 #include <QPainter>
+#include <QString>
 
 
 class Unit
@@ -92,7 +93,7 @@ public:
 class Player
 {
 public:
-    enum possible_unit {villager, warrior, archer, knight};
+    enum possible_unit {villager, warrior, archer, knight, invalid_unit};
 
     Player();
 
@@ -103,17 +104,19 @@ public:
     int get_food();
     int get_mine_count();
     int get_farm_count();
+    unsigned int get_unit_count();
     std::vector<QLabel*> get_label_arr();
 
 
     void add_money(int amount);
     void add_food(int amount);
     void train_unit(possible_unit new_unit);
-
+    /*
     void updateMoney(QLabel* label);
     void updateFood(QLabel* label);
     void updateMine(QLabel* label);
     void updateFarm(QLabel* label);
+    */
 
 
 
@@ -142,12 +145,20 @@ public:
 public slots:
     void end_turn_rewards(int player);        //int passed determines which player gets the benefit
     void update_labels(int player);
-    void paintEvent(QPaintEvent *e);
+    void choosingUnit(QString selected_unit);
+    void p1_train_unit();
+    void p2_train_unit();
+
 
 private:
     Ui::MainWindow *ui;
     Player p1;
     Player p2;
+    Player::possible_unit potential_unit;
+
+    void paintEvent(QPaintEvent *e);
+    void drawMap(QPainter *painter);
+
 
 
 };

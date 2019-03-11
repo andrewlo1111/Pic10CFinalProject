@@ -80,19 +80,19 @@ Knight::Knight()
 Mine::Mine()
 {
     building_type = "Mine";
-    durability = 2;
+    durability = 1;
 }
 
 Farm::Farm()
 {
     building_type = "Farm";
-    durability = 2;
+    durability = 1;
 }
 
 TownCenter::TownCenter()
 {
     building_type = "TownCenter";
-    durability = 3;
+    durability = 2;
 }
 
 
@@ -103,11 +103,13 @@ Player::Player():money(100), food(100), mine_count(0), farm_count(0), unit_list(
     QLabel *food_label = new QLabel("Food: 100");
     QLabel *mine_label = new QLabel("Mines: 0");
     QLabel *farm_label = new QLabel("Farms: 0");
+    QLabel *unit_label = new QLabel("Unit Count: 0");
 
     label_arr.push_back(money_label);
     label_arr.push_back(food_label);
     label_arr.push_back(mine_label);
     label_arr.push_back(farm_label);
+    label_arr.push_back(unit_label);
 }
 
 void Player::buildMine()
@@ -142,6 +144,11 @@ int Player::get_mine_count()
 int Player::get_farm_count()
 {
     return farm_count;
+}
+
+unsigned int Player::get_unit_count()
+{
+    return unit_list.size();
 }
 
 std::vector<QLabel*> Player::get_label_arr()
@@ -187,10 +194,12 @@ void Player::train_unit(possible_unit new_unit)
         unit_list.push_back(k1);
         break;
     }
+    case(invalid_unit):
+        break;
     }
 
 }
-
+/*
 void Player::updateMoney(QLabel* label)
 {
     QString text("Money: " + QString::number(money));
@@ -214,7 +223,7 @@ void Player::updateFarm(QLabel* label)
     QString text("Farm Count: " + QString::number(farm_count));
     label->setText(text);
 }
-
+*/
 
 
 void MainWindow::end_turn_rewards(int player)
@@ -239,12 +248,13 @@ void MainWindow::update_labels(int player)
         QString food_text("Food: " + QString::number(p1.get_food()));
         QString mine_text("Mines: " + QString::number(p1.get_mine_count()));
         QString farm_text("Farms: " + QString::number(p1.get_farm_count()));
+        QString unit_text("Unit count: " + QString::number(p1.get_unit_count()));
 
-        QString text_arr[4] = {money_text, food_text, mine_text, farm_text};
+        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, unit_text};
 
         std::vector<QLabel*> label_vector = p1.get_label_arr();
-
-        for(int i=0;i<4;i++)
+        unsigned int size = p1.get_label_arr().size();
+        for(unsigned int i=0;i<size;i++)
         {
             label_vector[i]->setText(text_arr[i]);
         }
@@ -256,12 +266,13 @@ void MainWindow::update_labels(int player)
         QString food_text("Food: " + QString::number(p2.get_food()));
         QString mine_text("Mines: " + QString::number(p2.get_mine_count()));
         QString farm_text("Farms: " + QString::number(p2.get_farm_count()));
+        QString unit_text("Unit count: " + QString::number(p2.get_unit_count()));
 
-        QString text_arr[4] = {money_text, food_text, mine_text, farm_text};
+        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, unit_text};
 
         std::vector<QLabel*> label_vector = p2.get_label_arr();
-
-        for(int i=0;i<4;i++)
+        unsigned int size = p2.get_label_arr().size();
+        for(unsigned int i=0;i<size;i++)
         {
             label_vector[i]->setText(text_arr[i]);
         }
@@ -272,13 +283,68 @@ void MainWindow::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e);
     QPainter painter(this);
-    QPen pen(Qt::black, 2, Qt::SolidLine);
-    painter.setPen(pen);
-    for(int i= 1; i<6;i++)
-    {
-        painter.drawLine(0, i*50, 1000, i*50);
-        painter.drawLine(i*50, 0, i*50, 1000);
+    this->drawMap(&painter);
+    QImage *sword_pic = new QImage;
+    sword_pic->load(":/Pictures/SavedPictures/sword_img.png");
+    painter.drawImage(40,40,*sword_pic);
+}
 
+void MainWindow::drawMap(QPainter *painter)
+{
+    QPen pen(Qt::black, 2, Qt::SolidLine);
+    painter->setPen(pen);
+    for(int i= 0; i<7;i++)
+    {
+        painter->drawLine(0, i*50, 300, i*50);                   //change spots by 50
+        painter->drawLine(i*50, 0, i*50, 300);
+    }
+}
+
+void MainWindow::choosingUnit(QString selected_unit)
+{
+    if(selected_unit == "Villager")
+    {
+        potential_unit = Player::villager;
+    }
+    else if (selected_unit == "Warrior")
+    {
+        potential_unit = Player::warrior;
+    }
+    else if (selected_unit == "Archer")
+    {
+        potential_unit = Player::archer;
+    }
+    else if (selected_unit == "Knight")
+    {
+        potential_unit = Player::knight;
+    }
+    else
+    {
+        potential_unit = Player::invalid_unit;
+    }
+}
+
+void MainWindow::p1_train_unit()
+{
+    if(this->potential_unit == Player::invalid_unit)
+    {
+        return;
+    }
+    else
+    {
+        p1.train_unit(potential_unit);
+    }
+}
+
+void MainWindow::p2_train_unit()
+{
+    if(this->potential_unit == Player::invalid_unit)
+    {
+        return;
+    }
+    else
+    {
+        p2.train_unit(potential_unit);
     }
 }
 
@@ -288,10 +354,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     QStackedWidget *control_window = new QStackedWidget;
-
-    p1.buildMine();
-    p1.buildFarm();
-    p2.buildFarm();
 
     QWidget *player_one_info = new QWidget;
     QWidget *player_two_info = new QWidget;
@@ -311,7 +373,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QPushButton *p1_end_turn_button = new QPushButton("End Turn");
     QPushButton *p1_train_unit_button = new QPushButton("Train Unit");
-
+    //combobox to select unit you want to train
     QLabel *select_unit_label = new QLabel("Select Unit: ");
     QComboBox *select_unit = new QComboBox;
     select_unit->addItem("Villager");
@@ -330,6 +392,7 @@ MainWindow::MainWindow(QWidget *parent) :
     p2_label->setFont(font);
 
     QPushButton *p2_end_turn_button = new QPushButton("End Turn");
+    //combo box to select unit you want to train
     QLabel *select_unit_label2 = new QLabel("Select Unit: ");
     QComboBox *select_unit2 = new QComboBox;
     select_unit2->addItem("Villager");
@@ -346,7 +409,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //player one adding additional labels
     player_one_lay->addWidget(p1_label);
-    for(unsigned int i= 0;i<4;i++)
+    for(unsigned int i= 0;i<5;i++)
     {
         if(i < 2)
         {
@@ -369,7 +432,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //player two adding additional labels
     player_two_lay->addWidget(p2_label);
-    for(unsigned int i=0;i<4;i++)
+    for(unsigned int i=0;i<5;i++)
     {
         if(i < 2)
         {
@@ -402,6 +465,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),control_window,SLOT(setCurrentIndex(int)));
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),this, SLOT(end_turn_rewards(int)));
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)), this, SLOT(update_labels(int)));
+
+    QObject::connect(select_unit, SIGNAL(currentIndexChanged(QString)), this, SLOT(choosingUnit(QString)));
+    QObject::connect(p1_train_unit_button, SIGNAL(clicked()), this, SLOT(p1_train_unit()));
+    QObject::connect(select_unit2, SIGNAL(currentIndexChanged(QSTring)), this, SLOT(choosingUnit(QString)));
+    QObject::connect(p2_train_unit_button, SIGNAL(clicked()), this, SLOT(p2_train_unit()));
+
     control_window->setGeometry(300,200,300,200);
     control_window->show();
 }
