@@ -199,31 +199,7 @@ void Player::train_unit(possible_unit new_unit)
     }
 
 }
-/*
-void Player::updateMoney(QLabel* label)
-{
-    QString text("Money: " + QString::number(money));
-    label->setText(text);
-}
 
-void Player::updateFood(QLabel* label)
-{
-    QString text("Food: " + QString::number(food));
-    label->setText(text);
-}
-
-void Player::updateMine(QLabel* label)
-{
-    QString text("Mine Count: "+ QString::number(mine_count));
-    label->setText(text);
-}
-
-void Player::updateFarm(QLabel* label)
-{
-    QString text("Farm Count: " + QString::number(farm_count));
-    label->setText(text);
-}
-*/
 
 
 void MainWindow::end_turn_rewards(int player)
@@ -248,13 +224,12 @@ void MainWindow::update_labels(int player)
         QString food_text("Food: " + QString::number(p1.get_food()));
         QString mine_text("Mines: " + QString::number(p1.get_mine_count()));
         QString farm_text("Farms: " + QString::number(p1.get_farm_count()));
-        QString unit_text("Unit count: " + QString::number(p1.get_unit_count()));
 
-        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, unit_text};
+        QString text_arr[4] = {money_text, food_text, mine_text, farm_text};
 
         std::vector<QLabel*> label_vector = p1.get_label_arr();
-        unsigned int size = p1.get_label_arr().size();
-        for(unsigned int i=0;i<size;i++)
+
+        for(unsigned int i=0;i<4;i++)
         {
             label_vector[i]->setText(text_arr[i]);
         }
@@ -266,17 +241,29 @@ void MainWindow::update_labels(int player)
         QString food_text("Food: " + QString::number(p2.get_food()));
         QString mine_text("Mines: " + QString::number(p2.get_mine_count()));
         QString farm_text("Farms: " + QString::number(p2.get_farm_count()));
-        QString unit_text("Unit count: " + QString::number(p2.get_unit_count()));
 
-        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, unit_text};
+
+        QString text_arr[4] = {money_text, food_text, mine_text, farm_text};
 
         std::vector<QLabel*> label_vector = p2.get_label_arr();
-        unsigned int size = p2.get_label_arr().size();
-        for(unsigned int i=0;i<size;i++)
+
+        for(unsigned int i=0;i<4;i++)
         {
             label_vector[i]->setText(text_arr[i]);
         }
     }
+}
+
+void MainWindow::p1_update_units()
+{
+    QString unit_text("Unit count: " + QString::number(p1.get_unit_count()));
+    p1.get_label_arr()[4]->setText(unit_text);
+}
+
+void MainWindow::p2_update_units()
+{
+    QString unit_text("Unit count: " + QString::number(p2.get_unit_count()));
+    p2.get_label_arr()[4]->setText(unit_text);
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
@@ -347,6 +334,8 @@ void MainWindow::p2_train_unit()
         p2.train_unit(potential_unit);
     }
 }
+
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -455,12 +444,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     player_two_info->setLayout(player_two_lay);
 
-
-
     control_window->setWindowTitle("Player Info");
     control_window->addWidget(player_one_info);
     control_window->addWidget(player_two_info);
-
 
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),control_window,SLOT(setCurrentIndex(int)));
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),this, SLOT(end_turn_rewards(int)));
@@ -468,8 +454,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(select_unit, SIGNAL(currentIndexChanged(QString)), this, SLOT(choosingUnit(QString)));
     QObject::connect(p1_train_unit_button, SIGNAL(clicked()), this, SLOT(p1_train_unit()));
-    QObject::connect(select_unit2, SIGNAL(currentIndexChanged(QSTring)), this, SLOT(choosingUnit(QString)));
+    QObject::connect(p1_train_unit_button, SIGNAL(clicked()), this, SLOT(p1_update_units()));
+    QObject::connect(select_unit2, SIGNAL(currentIndexChanged(QString)), this, SLOT(choosingUnit(QString)));
     QObject::connect(p2_train_unit_button, SIGNAL(clicked()), this, SLOT(p2_train_unit()));
+    QObject::connect(p2_train_unit_button, SIGNAL(clicked()), this, SLOT(p2_update_units()));
 
     control_window->setGeometry(300,200,300,200);
     control_window->show();

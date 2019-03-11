@@ -111,13 +111,6 @@ public:
     void add_money(int amount);
     void add_food(int amount);
     void train_unit(possible_unit new_unit);
-    /*
-    void updateMoney(QLabel* label);
-    void updateFood(QLabel* label);
-    void updateMine(QLabel* label);
-    void updateFarm(QLabel* label);
-    */
-
 
 
 private:
@@ -145,6 +138,8 @@ public:
 public slots:
     void end_turn_rewards(int player);        //int passed determines which player gets the benefit
     void update_labels(int player);
+    void p1_update_units();
+    void p2_update_units();
     void choosingUnit(QString selected_unit);
     void p1_train_unit();
     void p2_train_unit();
