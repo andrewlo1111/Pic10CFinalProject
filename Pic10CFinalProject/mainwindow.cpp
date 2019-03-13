@@ -194,8 +194,6 @@ void Player::train_unit(possible_unit new_unit)
         unit_list.push_back(k1);
         break;
     }
-    case(invalid_unit):
-        break;
     }
 
 }
@@ -296,6 +294,10 @@ void MainWindow::drawUnits(QPainter *painter)
         for(int col = 0; col <6; col++)
         {
             QRect rectangle(row * 50, col * 50, 50, 50 );
+            QFont font = painter->font();
+            font.setPointSize(25);
+            painter->setFont(font);
+
             switch(game_board[row][col])
             {
             case(empty):
@@ -373,33 +375,49 @@ void MainWindow::choosingUnit(QString selected_unit)
     {
         potential_unit = Player::knight;
     }
+}
+
+MainWindow::occupied MainWindow::convert_to_occupied(Player::possible_unit potential_unit)
+{
+    if( potential_unit == Player::villager)
+    {
+        return MainWindow::villager;
+    }
+    else if(potential_unit == Player::warrior)
+    {
+        return MainWindow::warrior;
+    }
+    else if(potential_unit == Player::archer)
+    {
+        return MainWindow::archer;
+    }
+    else if(potential_unit == Player::knight)
+    {
+        return MainWindow::knight;
+    }
     else
     {
-        potential_unit = Player::invalid_unit;
+        return MainWindow::town_center;   // used as a debugging mechanism
     }
 }
 
 void MainWindow::p1_train_unit()
 {
-    if(this->potential_unit == Player::invalid_unit)
-    {
-        return;
-    }
-    else
+    if(game_board[1][0] == empty)
     {
         p1.train_unit(potential_unit);
+        MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
+        game_board[1][0] = new_unit;
     }
 }
 
 void MainWindow::p2_train_unit()
 {
-    if(this->potential_unit == Player::invalid_unit)
-    {
-        return;
-    }
-    else
+    if(game_board[5][4] == empty)
     {
         p2.train_unit(potential_unit);
+        MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
+        game_board[5][4] = new_unit;
     }
 }
 
@@ -418,10 +436,6 @@ MainWindow::MainWindow(QWidget *parent) :
             if((row == 0 && col==0) || (row == 5 && col ==5))
             {
                 game_board[row][col] = town_center;
-            }
-            else if(row ==1 && col==0)
-            {
-                game_board[row][col] = knight;
             }
             else
             {

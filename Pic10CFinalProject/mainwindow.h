@@ -93,7 +93,7 @@ public:
 class Player
 {
 public:
-    enum possible_unit {villager, warrior, archer, knight, invalid_unit};
+    enum possible_unit {villager, warrior, archer, knight};
 
     Player();
 
@@ -158,6 +158,7 @@ private:
     void paintEvent(QPaintEvent *e);
     void drawMap(QPainter *painter);
     void drawUnits(QPainter *painter);
+    MainWindow::occupied convert_to_occupied(Player::possible_unit);
 
 
 
