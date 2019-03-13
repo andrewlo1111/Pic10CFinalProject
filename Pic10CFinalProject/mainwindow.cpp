@@ -295,6 +295,7 @@ void MainWindow::drawUnits(QPainter *painter)
     {
         for(int col = 0; col <6; col++)
         {
+            QRect rectangle(row * 50, col * 50, 50, 50 );
             switch(game_board[row][col])
             {
             case(empty):
@@ -304,38 +305,49 @@ void MainWindow::drawUnits(QPainter *painter)
             case(town_center):
             {
                 //draw some house
-                QRect rectangle(row * 50, col * 50, (row+1) * 50, (col+1) * 50 );
                 painter->drawEllipse(rectangle);
                 break;
             }
             case(mine):
             {
                 //draw some mine
+                QString text("M");
+                painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
             case(farm):
             {
                 //draw farm
+                QString text("F");
+                painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
             case(villager):
             {
                 //draw villager
+                QString text("V");
+                painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
             case(warrior):
             {
                 //draw warrior
+                QString text("W");
+                painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
             case(archer):
             {
                 //draw archer
+                QString text("A");
+                painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
             case(knight):
             {
                 //draw knight
+                QString text("K");
+                painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
             }
@@ -406,6 +418,10 @@ MainWindow::MainWindow(QWidget *parent) :
             if((row == 0 && col==0) || (row == 5 && col ==5))
             {
                 game_board[row][col] = town_center;
+            }
+            else if(row ==1 && col==0)
+            {
+                game_board[row][col] = knight;
             }
             else
             {
