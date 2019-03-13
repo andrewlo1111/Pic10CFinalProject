@@ -151,11 +151,12 @@ private:
     Ui::MainWindow *ui;
     Player p1;
     Player p2;
-    Player::possible_unit potential_unit;
+    Player::possible_unit potential_unit = Player::villager;
     MainWindow::occupied game_board[6][6];
 
 
     void paintEvent(QPaintEvent *e);
+    void processandRepaint();
     void drawMap(QPainter *painter);
     void drawUnits(QPainter *painter);
     MainWindow::occupied convert_to_occupied(Player::possible_unit);

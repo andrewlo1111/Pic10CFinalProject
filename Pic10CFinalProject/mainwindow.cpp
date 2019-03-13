@@ -274,6 +274,12 @@ void MainWindow::paintEvent(QPaintEvent *e)
     painter.drawImage(40,40,*sword_pic);
 }
 
+void MainWindow::processandRepaint()
+{
+    QCoreApplication::processEvents();
+    this->repaint();
+}
+
 void MainWindow::drawMap(QPainter *painter)
 {
     QPen pen(Qt::black, 2, Qt::SolidLine);
@@ -293,7 +299,7 @@ void MainWindow::drawUnits(QPainter *painter)
     {
         for(int col = 0; col <6; col++)
         {
-            QRect rectangle(row * 50, col * 50, 50, 50 );
+            QRect rectangle(col * 50, row * 50, 50, 50 );
             QFont font = painter->font();
             font.setPointSize(25);
             painter->setFont(font);
@@ -403,21 +409,41 @@ MainWindow::occupied MainWindow::convert_to_occupied(Player::possible_unit poten
 
 void MainWindow::p1_train_unit()
 {
-    if(game_board[1][0] == empty)
-    {
+    auto train = [this](int row, int col) {
         p1.train_unit(potential_unit);
         MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
-        game_board[1][0] = new_unit;
+        game_board[row][col] = new_unit;
+        processandRepaint();
+    };
+    if(game_board[1][0] == empty)
+    {
+        train(1,0);
+    }
+    else if(game_board[0][1] == empty)
+    {
+        train(0,1);
     }
 }
 
 void MainWindow::p2_train_unit()
 {
-    if(game_board[5][4] == empty)
-    {
+    auto train = [this](int row, int col){
         p2.train_unit(potential_unit);
         MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
-        game_board[5][4] = new_unit;
+        game_board[row][col] = new_unit;
+        processandRepaint();
+    };
+    if(game_board[5][4] == empty)
+    {
+        train(5,4);
+    }
+    else if(game_board[4][5] == empty)
+    {
+        train(4,5);
+    }
+    else
+    {
+        return;
     }
 }
 
@@ -429,7 +455,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    for(int row = 0;row<6;row++)
+    for(int row = 0;row<6;row++)     //setup for board at very start of the game
     {
         for(int col = 0; col<6; col++)
         {
