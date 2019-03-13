@@ -285,6 +285,62 @@ void MainWindow::drawMap(QPainter *painter)
         painter->drawLine(0, i*50, 300, i*50);                   //change spots by 50
         painter->drawLine(i*50, 0, i*50, 300);
     }
+    drawUnits(painter);
+
+}
+
+void MainWindow::drawUnits(QPainter *painter)
+{
+    for(int row =0; row<6; row++)
+    {
+        for(int col = 0; col <6; col++)
+        {
+            switch(game_board[row][col])
+            {
+            case(empty):
+            {
+                break;
+            }
+            case(town_center):
+            {
+                //draw some house
+                QRect rectangle(row * 50, col * 50, (row+1) * 50, (col+1) * 50 );
+                painter->drawEllipse(rectangle);
+                break;
+            }
+            case(mine):
+            {
+                //draw some mine
+                break;
+            }
+            case(farm):
+            {
+                //draw farm
+                break;
+            }
+            case(villager):
+            {
+                //draw villager
+                break;
+            }
+            case(warrior):
+            {
+                //draw warrior
+                break;
+            }
+            case(archer):
+            {
+                //draw archer
+                break;
+            }
+            case(knight):
+            {
+                //draw knight
+                break;
+            }
+            }
+        }
+    }
 }
 
 void MainWindow::choosingUnit(QString selected_unit)
@@ -342,6 +398,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    for(int row = 0;row<6;row++)
+    {
+        for(int col = 0; col<6; col++)
+        {
+            if((row == 0 && col==0) || (row == 5 && col ==5))
+            {
+                game_board[row][col] = town_center;
+            }
+            else
+            {
+                game_board[row][col] = empty;
+            }
+        }
+    }
+
     QStackedWidget *control_window = new QStackedWidget;
 
     QWidget *player_one_info = new QWidget;
