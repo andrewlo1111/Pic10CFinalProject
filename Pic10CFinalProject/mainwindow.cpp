@@ -319,13 +319,13 @@ void MainWindow::update_labels(int player)
 
 void MainWindow::p1_update_units()
 {
-    QString unit_text("Unit count: " + QString::number(p1.get_unit_count()));
+    QString unit_text("Unit Count: " + QString::number(p1.get_unit_count()));
     p1.get_label_arr()[4]->setText(unit_text);
 }
 
 void MainWindow::p2_update_units()
 {
-    QString unit_text("Unit count: " + QString::number(p2.get_unit_count()));
+    QString unit_text("Unit Count: " + QString::number(p2.get_unit_count()));
     p2.get_label_arr()[4]->setText(unit_text);
 }
 
@@ -538,6 +538,17 @@ void MainWindow::p2_train_unit()
     }
 }
 
+void MainWindow::move()
+{
+    int row = 1;
+    int col = 0;
+    game_board[row + 1][col] = game_board[row][col];
+    game_board[row][col] = empty;
+    player_indicator[row+1][col] = player_indicator[row][col];
+    player_indicator[row][col] = none;
+    processandRepaint();
+}
+
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -677,6 +688,11 @@ MainWindow::MainWindow(QWidget *parent) :
     control_window->setWindowTitle("Player Info");
     control_window->addWidget(player_one_info);
     control_window->addWidget(player_two_info);
+
+    QPushButton *button = new QPushButton("move");
+
+    QObject::connect(button, SIGNAL(clicked()), this, SLOT(move()));
+    button->show();
 
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),control_window,SLOT(setCurrentIndex(int)));
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),this, SLOT(end_turn_rewards(int)));

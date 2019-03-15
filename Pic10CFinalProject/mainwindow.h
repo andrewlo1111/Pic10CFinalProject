@@ -154,6 +154,7 @@ public slots:
     void choosingUnit(QString selected_unit);
     void p1_train_unit();
     void p2_train_unit();
+    void move();
 
 
 private:
@@ -163,6 +164,7 @@ private:
     Player::possible_unit potential_unit = Player::villager;
     MainWindow::occupied game_board[6][6];
     MainWindow::owner player_indicator[6][6];
+    bool p1_turn;
 
 
     void paintEvent(QPaintEvent *e);
@@ -170,6 +172,7 @@ private:
     void drawMap(QPainter *painter);
     void drawUnits(QPainter *painter);
     MainWindow::occupied convert_to_occupied(Player::possible_unit);
+
 
 
 
