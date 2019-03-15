@@ -40,6 +40,7 @@ void Unit::attack_enemy(Unit other_unit)
     }
 }
 
+
 Villager::Villager()
 {
     unit_type = "Villager";
@@ -47,11 +48,10 @@ Villager::Villager()
     defense = 0.5;
 }
 
-void Villager::build()
+
+void Villager::build(int row, int col)
 {
-    //ask for input for possible building
-    std::string possible_buildings[3] = {"TownCenter", "Farm", "Mine"};
-    //for loop to determine if possible then build
+    //build the building at specific row and col
 }
 
 Warrior::Warrior()
@@ -97,7 +97,7 @@ TownCenter::TownCenter()
 
 
 
-Player::Player():money(100), food(100), mine_count(0), farm_count(0), unit_list(0)
+Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_center_count(0), unit_list(0)
 {
     QLabel *money_label = new QLabel("Money: 100");
     QLabel *food_label = new QLabel("Food: 100");
@@ -110,6 +110,7 @@ Player::Player():money(100), food(100), mine_count(0), farm_count(0), unit_list(
     label_arr.push_back(mine_label);
     label_arr.push_back(farm_label);
     label_arr.push_back(unit_label);
+
 }
 
 void Player::buildMine()
@@ -156,6 +157,15 @@ std::vector<QLabel*> Player::get_label_arr()
     return label_arr;
 }
 
+bool Player::lose()
+{
+    if(get_unit_count() == 0 && town_center_count == 0 )
+    {
+        return true;
+    }
+    return false;
+}
+
 void Player::add_money(int amount)
 {
     money += amount;
@@ -174,27 +184,36 @@ void Player::train_unit(possible_unit new_unit)
     {
         Villager v1;
         unit_list.push_back(v1);
+        this->money -= 50;
+        this->food -= 50;
         break;
     }
     case(warrior):
     {
         Warrior w1;
         unit_list.push_back(w1);
+        this->money -= 100;
+        this->food -= 100;
         break;
     }
     case(archer):
     {
         Archer a1;
         unit_list.push_back(a1);
+        this->money -= 100;
+        this->food -= 100;
         break;
     }
     case(knight):
     {
         Knight k1;
         unit_list.push_back(k1);
+        this->money -= 150;
+        this->food -= 150;
         break;
     }
     }
+
 
 }
 
@@ -475,6 +494,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget *player_one_info = new QWidget;
     QWidget *player_two_info = new QWidget;
     QButtonGroup *end_turn_buttons = new QButtonGroup;
+    QButtonGroup *train_unit_buttons = new QButtonGroup;
 
     //player one layout with labels and buttons
     QVBoxLayout *player_one_lay = new QVBoxLayout;
@@ -523,6 +543,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //added two buttons to the button group to change stacked widget index later
     end_turn_buttons->addButton(p1_end_turn_button,1);
     end_turn_buttons->addButton(p2_end_turn_button,0);
+
+    train_unit_buttons->addButton(p1_train_unit_button, 0);
+    train_unit_buttons->addButton(p2_train_unit_button, 1);
 
     //player one adding additional labels
     player_one_lay->addWidget(p1_label);
@@ -583,9 +606,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(select_unit, SIGNAL(currentIndexChanged(QString)), this, SLOT(choosingUnit(QString)));
     QObject::connect(p1_train_unit_button, SIGNAL(clicked()), this, SLOT(p1_train_unit()));
     QObject::connect(p1_train_unit_button, SIGNAL(clicked()), this, SLOT(p1_update_units()));
+
     QObject::connect(select_unit2, SIGNAL(currentIndexChanged(QString)), this, SLOT(choosingUnit(QString)));
     QObject::connect(p2_train_unit_button, SIGNAL(clicked()), this, SLOT(p2_train_unit()));
     QObject::connect(p2_train_unit_button, SIGNAL(clicked()), this, SLOT(p2_update_units()));
+
+    QObject::connect(train_unit_buttons, SIGNAL(buttonClicked(int)), this, SLOT(update_labels(int)));
 
     control_window->setGeometry(300,200,300,200);
     control_window->show();

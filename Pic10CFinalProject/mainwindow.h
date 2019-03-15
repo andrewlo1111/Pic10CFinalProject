@@ -23,11 +23,14 @@ public:
     void move();
     void defend();
     void attack_enemy(Unit other_unit);
+
 protected:
     std::string unit_type;
     double attack;
     double defense;
     bool done = false;
+
+
 
 };
 
@@ -35,7 +38,7 @@ class Villager: public Unit
 {
 public:
     Villager();
-    void build();
+    void build(int row, int col);
 
 };
 
@@ -62,26 +65,26 @@ public:
 class  Building
 {
 public:
-    Building(): building_type("Building"), durability(2) {}
+    Building(): building_type("Building"), durability(1) {}
   protected:
     std::string building_type;
     int durability;
 
 };
 
-class Farm:Building
+class Farm: public Building
 {
 public:
     Farm();
 };
 
-class Mine:Building
+class Mine: public Building
 {
 public:
     Mine();
 };
 
-class TownCenter:Building
+class TownCenter: public Building
 {
 public:
     TownCenter();
@@ -107,6 +110,8 @@ public:
     unsigned int get_unit_count();
     std::vector<QLabel*> get_label_arr();
 
+    bool lose();
+
 
     void add_money(int amount);
     void add_food(int amount);
@@ -118,8 +123,10 @@ private:
     int food;
     int mine_count;
     int farm_count;
+    int town_center_count;
     std::vector<QLabel*> label_arr;
     std::vector<Unit> unit_list;
+
 
 };
 
