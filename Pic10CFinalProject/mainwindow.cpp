@@ -346,34 +346,38 @@ void MainWindow::drawUnits(QPainter *painter)
             {
                 break;
             }
-            case(town_center):
+            case(p1_town_center):
             {
                 //draw some house
                 painter->drawEllipse(rectangle);
+                painter->fillRect(rectangle, Qt::red);
                 break;
             }
-            case(mine):
+            case(p1_mine):
             {
                 //draw some mine
                 QString text("M");
+                //set color to red
                 painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
-            case(farm):
+            case(p1_farm):
             {
                 //draw farm
                 QString text("F");
+                //set color to red
                 painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
-            case(villager):
+            case(p1_villager):
             {
                 //draw villager
                 QString text("V");
+                //set color to red
                 painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
-            case(warrior):
+            case(p1_warrior):
             {
                 //draw warrior
                 QString text("W");
@@ -544,13 +548,20 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         for(int col = 0; col<6; col++)
         {
-            if((row == 0 && col==0) || (row == 5 && col ==5))
+            if(row == 0 && col==0 )
             {
                 game_board[row][col] = town_center;
+                player_indicator[row][col] = player_one;
+            }
+            if(row == 5 && col ==5)
+            {
+                game_board[row][col] = town_center;
+                player_indicator[row][col] = player_two;
             }
             else
             {
                 game_board[row][col] = empty;
+                player_indicator[row][col] = none;
             }
         }
     }

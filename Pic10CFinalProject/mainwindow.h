@@ -140,7 +140,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    enum occupied{empty, town_center, mine, farm, villager, warrior, archer, knight};
+    enum owner{none, player_one, player_two};
+    enum occupied{empty, town_center, mine, farm, warrior, archer, knight};
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -161,6 +162,7 @@ private:
     Player p2;
     Player::possible_unit potential_unit = Player::villager;
     MainWindow::occupied game_board[6][6];
+    MainWindow::owner player_indicator[6][6];
 
 
     void paintEvent(QPaintEvent *e);
