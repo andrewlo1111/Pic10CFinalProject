@@ -141,7 +141,7 @@ class MainWindow : public QMainWindow
 
 public:
     enum owner{none, player_one, player_two};
-    enum occupied{empty, town_center, mine, farm, warrior, archer, knight};
+    enum occupied{empty, town_center, mine, farm, villager, warrior, archer, knight};
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

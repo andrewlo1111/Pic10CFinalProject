@@ -339,21 +339,30 @@ void MainWindow::drawUnits(QPainter *painter)
             QFont font = painter->font();
             font.setPointSize(25);
             painter->setFont(font);
-
+            if(player_indicator[row][col] == player_one)
+            {
+                painter->setBrush(Qt::red);
+                painter->setPen(Qt::red);
+            }
+            if(player_indicator[row][col] == player_two)
+            {
+                painter->setBrush(Qt::blue);
+                painter->setPen(Qt::blue);
+            }
             switch(game_board[row][col])
             {
             case(empty):
             {
                 break;
             }
-            case(p1_town_center):
+            case(town_center):
             {
                 //draw some house
                 painter->drawEllipse(rectangle);
-                painter->fillRect(rectangle, Qt::red);
+                //painter->fillRect(rectangle, Qt::red);
                 break;
             }
-            case(p1_mine):
+            case(mine):
             {
                 //draw some mine
                 QString text("M");
@@ -361,7 +370,7 @@ void MainWindow::drawUnits(QPainter *painter)
                 painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
-            case(p1_farm):
+            case(farm):
             {
                 //draw farm
                 QString text("F");
@@ -369,7 +378,7 @@ void MainWindow::drawUnits(QPainter *painter)
                 painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
-            case(p1_villager):
+            case(villager):
             {
                 //draw villager
                 QString text("V");
@@ -377,7 +386,7 @@ void MainWindow::drawUnits(QPainter *painter)
                 painter->drawText(rectangle, Qt::AlignCenter, text);
                 break;
             }
-            case(p1_warrior):
+            case(warrior):
             {
                 //draw warrior
                 QString text("W");
@@ -498,6 +507,7 @@ void MainWindow::p1_train_unit()
         p1.train_unit(potential_unit);
         MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
         game_board[row][col] = new_unit;
+        player_indicator[row][col] = player_one;
         processandRepaint();
     };
     if(game_board[1][0] == empty)
@@ -520,6 +530,7 @@ void MainWindow::p2_train_unit()
         p2.train_unit(potential_unit);
         MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
         game_board[row][col] = new_unit;
+        player_indicator[row][col] = player_two;
         processandRepaint();
     };
     if(game_board[5][4] == empty)
@@ -553,7 +564,7 @@ MainWindow::MainWindow(QWidget *parent) :
                 game_board[row][col] = town_center;
                 player_indicator[row][col] = player_one;
             }
-            if(row == 5 && col ==5)
+            else if(row == 5 && col ==5)
             {
                 game_board[row][col] = town_center;
                 player_indicator[row][col] = player_two;
