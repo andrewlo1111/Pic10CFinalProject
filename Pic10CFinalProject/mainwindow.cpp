@@ -178,14 +178,14 @@ void Player::add_food(int amount)
 
 void Player::train_unit(possible_unit new_unit)
 {
+    if(enough_resources(new_unit)== false)
+    {
+        return;
+    }
     switch(new_unit)
     {
     case(villager):
     {
-        if((this->money - 50) < 0 && (this->food) - 50  < 0)
-        {
-            break;
-        }
         Villager v1;
         unit_list.push_back(v1);
         this->money -= 50;
@@ -195,10 +195,6 @@ void Player::train_unit(possible_unit new_unit)
     }
     case(warrior):
     {
-        if((this->money) - 100 < 0 && (this->food) - 100 < 0)
-        {
-            break;
-        }
         Warrior w1;
         unit_list.push_back(w1);
         this->money -= 100;
@@ -207,10 +203,6 @@ void Player::train_unit(possible_unit new_unit)
     }
     case(archer):
     {
-        if((this->money) -100 < 0 && (this->food) - 100 < 0)
-        {
-            break;
-        }
         Archer a1;
         unit_list.push_back(a1);
         this->money -= 100;
@@ -219,10 +211,6 @@ void Player::train_unit(possible_unit new_unit)
     }
     case(knight):
     {
-        if((this->money) - 150 < 0 && (this->food)-150 < 0)
-        {
-            break;
-        }
         Knight k1;
         unit_list.push_back(k1);
         this->money -= 150;
@@ -231,7 +219,46 @@ void Player::train_unit(possible_unit new_unit)
     }
     }
 
+}
 
+bool Player::enough_resources(possible_unit unit)
+{
+    switch(unit)
+    {
+    case(villager):
+    {
+        if(money <50 || food <50)
+        {
+            return false;
+        }
+        break;
+    }
+    case(warrior):
+    {
+        if(money < 100 || food <100)
+        {
+            return false;
+        }
+        break;
+    }
+    case(archer):
+    {
+        if(money<100 || food < 100)
+        {
+            return false;
+        }
+        break;
+    }
+    case(knight):
+    {
+        if(money<150 || food<150)
+        {
+            return false;
+        }
+        break;
+    }
+    }
+    return true;
 }
 
 
@@ -242,11 +269,13 @@ void MainWindow::end_turn_rewards(int player)
     {
         p1.add_money(p1.get_mine_count() * 100);
         p1.add_food(p1.get_farm_count() * 100);
+        p1_turn = false;
     }
     if (player == 1)
     {
         p2.add_money(p2.get_mine_count() * 100);
         p2.add_food(p2.get_farm_count() * 100);
+        p1_turn = true;
     }
 }
 
@@ -456,45 +485,7 @@ MainWindow::occupied MainWindow::convert_to_occupied(Player::possible_unit poten
     }
 }
 
-bool Player::enough_resources(possible_unit unit)
-{
-    switch(unit)
-    {
-    case(villager):
-    {
-        if(money <50 || food <50)
-        {
-            return false;
-        }
-        break;
-    }
-    case(warrior):
-    {
-        if(money < 100 || food <100)
-        {
-            return false;
-        }
-        break;
-    }
-    case(archer):
-    {
-        if(money<100 || food < 100)
-        {
-            return false;
-        }
-        break;
-    }
-    case(knight):
-    {
-        if(money<150 || food<150)
-        {
-            return false;
-        }
-        break;
-    }
-    }
-    return true;
-}
+
 
 void MainWindow::p1_train_unit()
 {
@@ -554,7 +545,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    p1_turn = true;
     for(int row = 0;row<6;row++)     //setup for board at very start of the game
     {
         for(int col = 0; col<6; col++)
@@ -600,12 +591,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QPushButton *p1_train_unit_button = new QPushButton("Train Unit");
     //combobox to select unit you want to train
     QLabel *select_unit_label = new QLabel("Select Unit: ");
-    QComboBox *select_unit = new QComboBox;
-    select_unit->addItem("Villager");
-    select_unit->addItem("Warrior");
-    select_unit->addItem("Archer");
-    select_unit->addItem("Knight");
 
+    QString units[4] = {"Villager", "Warrior", "Archer", "Knight"};
+    QComboBox *select_unit = new QComboBox;
+    auto select = [units](QComboBox* box) {
+        for(int i=0;i<4;i++)
+        {
+            box->addItem(units[i]);
+        }
+    };
+    select(select_unit);
 
     //player two layout with labels and buttons
     QVBoxLayout *player_two_lay = new QVBoxLayout;
@@ -620,10 +615,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //combo box to select unit you want to train
     QLabel *select_unit_label2 = new QLabel("Select Unit: ");
     QComboBox *select_unit2 = new QComboBox;
-    select_unit2->addItem("Villager");
-    select_unit2->addItem("Warrior");
-    select_unit2->addItem("Archer");
-    select_unit2->addItem("Knight");
+    select(select_unit2);
     QPushButton *p2_train_unit_button = new QPushButton("Train Unit");   //confirms whatever is selected on combo box
 
 
@@ -670,7 +662,6 @@ MainWindow::MainWindow(QWidget *parent) :
         {
             p2_farm_mine_lay->addWidget(p2.get_label_arr()[i]);
         }
-
     }
 
     player_two_lay->addLayout(p2_food_money_lay);
