@@ -110,6 +110,7 @@ public:
     unsigned int get_unit_count();
     std::vector<QLabel*> get_label_arr();
 
+    bool enough_resources(possible_unit);
     bool lose();
 
 

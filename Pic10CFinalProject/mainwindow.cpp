@@ -182,14 +182,23 @@ void Player::train_unit(possible_unit new_unit)
     {
     case(villager):
     {
+        if((this->money - 50) < 0 && (this->food) - 50  < 0)
+        {
+            break;
+        }
         Villager v1;
         unit_list.push_back(v1);
         this->money -= 50;
         this->food -= 50;
         break;
+
     }
     case(warrior):
     {
+        if((this->money) - 100 < 0 && (this->food) - 100 < 0)
+        {
+            break;
+        }
         Warrior w1;
         unit_list.push_back(w1);
         this->money -= 100;
@@ -198,6 +207,10 @@ void Player::train_unit(possible_unit new_unit)
     }
     case(archer):
     {
+        if((this->money) -100 < 0 && (this->food) - 100 < 0)
+        {
+            break;
+        }
         Archer a1;
         unit_list.push_back(a1);
         this->money -= 100;
@@ -206,6 +219,10 @@ void Player::train_unit(possible_unit new_unit)
     }
     case(knight):
     {
+        if((this->money) - 150 < 0 && (this->food)-150 < 0)
+        {
+            break;
+        }
         Knight k1;
         unit_list.push_back(k1);
         this->money -= 150;
@@ -426,8 +443,53 @@ MainWindow::occupied MainWindow::convert_to_occupied(Player::possible_unit poten
     }
 }
 
+bool Player::enough_resources(possible_unit unit)
+{
+    switch(unit)
+    {
+    case(villager):
+    {
+        if(money <50 || food <50)
+        {
+            return false;
+        }
+        break;
+    }
+    case(warrior):
+    {
+        if(money < 100 || food <100)
+        {
+            return false;
+        }
+        break;
+    }
+    case(archer):
+    {
+        if(money<100 || food < 100)
+        {
+            return false;
+        }
+        break;
+    }
+    case(knight):
+    {
+        if(money<150 || food<150)
+        {
+            return false;
+        }
+        break;
+    }
+    }
+    return true;
+}
+
 void MainWindow::p1_train_unit()
 {
+
+    if(p1.enough_resources(potential_unit) == false)
+    {
+        return;
+    }
     auto train = [this](int row, int col) {
         p1.train_unit(potential_unit);
         MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
@@ -446,6 +508,10 @@ void MainWindow::p1_train_unit()
 
 void MainWindow::p2_train_unit()
 {
+    if(p2.enough_resources(potential_unit) == false)
+    {
+        return;
+    }
     auto train = [this](int row, int col){
         p2.train_unit(potential_unit);
         MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
