@@ -161,10 +161,12 @@ private:
     Ui::MainWindow *ui;
     Player p1;
     Player p2;
-    Player::possible_unit potential_unit = Player::villager;
-    MainWindow::occupied game_board[6][6];
-    MainWindow::owner player_indicator[6][6];
     bool p1_turn;
+    Player::possible_unit potential_unit = Player::villager;    //current selected unit on combo box
+    MainWindow::occupied game_board[6][6];              //indicates unit on board
+    MainWindow::owner player_indicator[6][6];           //indicates who owns the unit on board
+    int selected_spot[2];                                   //first element will be row, second element will be column
+
 
 
     void paintEvent(QPaintEvent *e);

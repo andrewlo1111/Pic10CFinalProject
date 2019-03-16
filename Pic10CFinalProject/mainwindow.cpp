@@ -540,8 +540,8 @@ void MainWindow::p2_train_unit()
 
 void MainWindow::move()
 {
-    int row = 1;
-    int col = 0;
+    int row = selected_spot[0];
+    int col = selected_spot[1];
     game_board[row + 1][col] = game_board[row][col];
     game_board[row][col] = empty;
     player_indicator[row+1][col] = player_indicator[row][col];
@@ -557,6 +557,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     p1_turn = true;
+    selected_spot[0] = 1;
+    selected_spot[1] = 0;
     for(int row = 0;row<6;row++)     //setup for board at very start of the game
     {
         for(int col = 0; col<6; col++)
