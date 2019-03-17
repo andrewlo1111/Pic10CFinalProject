@@ -14,6 +14,7 @@
 #include <QComboBox>
 #include <QPainter>
 #include <QString>
+#include <iostream>
 
 
 class Unit
@@ -157,6 +158,7 @@ public slots:
     void move();
 
 
+
 private:
     Ui::MainWindow *ui;
     Player p1;
@@ -168,13 +170,17 @@ private:
     int selected_spot[2];                                   //first element will be row, second element will be column
 
 
-
+    //painting functions
     void paintEvent(QPaintEvent *e);
     void processandRepaint();
     void drawMap(QPainter *painter);
     void drawUnits(QPainter *painter);
     void highlight_selected(QPainter *painter);
+
+    //helper functions
     MainWindow::occupied convert_to_occupied(Player::possible_unit);
+    void change_select(int row, int col);
+
 
 
 

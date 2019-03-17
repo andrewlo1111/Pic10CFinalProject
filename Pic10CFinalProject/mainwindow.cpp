@@ -270,13 +270,16 @@ void MainWindow::end_turn_rewards(int player)
         p1.add_money(p1.get_mine_count() * 100);
         p1.add_food(p1.get_farm_count() * 100);
         p1_turn = false;
+        change_select(1,0);
     }
     if (player == 1)
     {
         p2.add_money(p2.get_mine_count() * 100);
         p2.add_food(p2.get_farm_count() * 100);
         p1_turn = true;
+        change_select(5,4);
     }
+
 }
 
 void MainWindow::update_labels(int player)
@@ -329,6 +332,13 @@ void MainWindow::p2_update_units()
     p2.get_label_arr()[4]->setText(unit_text);
 }
 
+void MainWindow::change_select(int row, int col)
+{
+    selected_spot[0] = row;
+    selected_spot[1] = col;
+    processandRepaint();
+}
+
 void MainWindow::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e);
@@ -338,6 +348,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     this->drawUnits(&painter);
 
 }
+
 
 void MainWindow::processandRepaint()
 {
