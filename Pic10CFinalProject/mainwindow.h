@@ -173,6 +173,7 @@ private:
     void processandRepaint();
     void drawMap(QPainter *painter);
     void drawUnits(QPainter *painter);
+    void highlight_selected(QPainter *painter);
     MainWindow::occupied convert_to_occupied(Player::possible_unit);
 
 

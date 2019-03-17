@@ -334,9 +334,9 @@ void MainWindow::paintEvent(QPaintEvent *e)
     Q_UNUSED(e);
     QPainter painter(this);
     this->drawMap(&painter);
-    QImage *sword_pic = new QImage;
-    sword_pic->load(":/Pictures/SavedPictures/sword_img.png");
-    painter.drawImage(40,40,*sword_pic);
+    this->highlight_selected(&painter);
+    this->drawUnits(&painter);
+
 }
 
 void MainWindow::processandRepaint()
@@ -354,7 +354,7 @@ void MainWindow::drawMap(QPainter *painter)
         painter->drawLine(0, i*50, 300, i*50);                   //change spots by 50
         painter->drawLine(i*50, 0, i*50, 300);
     }
-    drawUnits(painter);
+
 
 }
 
@@ -439,6 +439,16 @@ void MainWindow::drawUnits(QPainter *painter)
             }
         }
     }
+}
+
+
+void MainWindow::highlight_selected(QPainter *painter)
+{
+    int row = selected_spot[0];
+    int col = selected_spot[1];
+    QRect rectangle(col*50, row*50, 50, 50);
+    painter->drawRect(rectangle);
+    painter->fillRect(rectangle, Qt::green);
 }
 
 void MainWindow::choosingUnit(QString selected_unit)
