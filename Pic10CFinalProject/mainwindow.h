@@ -14,6 +14,7 @@
 #include <QComboBox>
 #include <QPainter>
 #include <QString>
+#include <QKeyEvent>
 #include <iostream>
 
 
@@ -155,10 +156,17 @@ public slots:
     void choosingUnit(QString selected_unit);
     void p1_train_unit();
     void p2_train_unit();
+
+    void moveCursorUp();
+    void moveCursorDown();
+    void moveCursorLeft();
+    void moveCursorRight();
+
     void moveUp();
     void moveDown();
     void moveLeft();
     void moveRight();
+
 
 
 
@@ -171,6 +179,7 @@ private:
     MainWindow::occupied game_board[6][6];              //indicates unit on board
     MainWindow::owner player_indicator[6][6];           //indicates who owns the unit on board
     int selected_spot[2];                                   //first element will be row, second element will be column
+    int cursor[2];                                          //first element is row, second element is column
 
 
     //painting functions
@@ -179,6 +188,9 @@ private:
     void drawMap(QPainter *painter);
     void drawUnits(QPainter *painter);
     void highlight_selected(QPainter *painter);
+    void highlight_cursor(QPainter *painter);
+
+    void keyPressEvent(QKeyEvent *event);
 
     //helper functions
     MainWindow::occupied convert_to_occupied(Player::possible_unit);

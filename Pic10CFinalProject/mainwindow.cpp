@@ -347,6 +347,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     Q_UNUSED(e);
     QPainter painter(this);
     this->drawMap(&painter);
+    this->highlight_cursor(&painter);
     this->highlight_selected(&painter);
     this->drawUnits(&painter);
 
@@ -465,6 +466,15 @@ void MainWindow::highlight_selected(QPainter *painter)
     painter->fillRect(rectangle, Qt::green);
 }
 
+void MainWindow::highlight_cursor(QPainter *painter)
+{
+    int row = cursor[0];
+    int col = cursor[1];
+    QRect rectangle(col* 50, row* 50, 50, 50);
+    painter->drawRect(rectangle);
+    painter->fillRect(rectangle, Qt::yellow);
+}
+
 void MainWindow::choosingUnit(QString selected_unit)
 {
     if(selected_unit == "Villager")
@@ -562,6 +572,69 @@ void MainWindow::p2_train_unit()
     }
 }
 
+void MainWindow::moveCursorUp()
+{
+    if(cursor[0] > 0)
+    {
+        cursor[0] -= 1;
+        processandRepaint();
+    }
+    return;
+}
+
+void MainWindow::moveCursorDown()
+{
+    if(cursor[0] < 5 )
+    {
+        cursor[1] += 1;
+        processandRepaint();
+    }
+    return;
+}
+
+void MainWindow::moveCursorLeft()
+{
+    if(cursor[1] > 0)
+    {
+        cursor[0] -= 1;
+        processandRepaint();
+    }
+    return;
+}
+
+void MainWindow::moveCursorRight()
+{
+    if(cursor[1] < 5)
+    {
+        cursor[1] += 1;
+        processandRepaint();
+    }
+    return;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch(event->key())
+    {
+        case Qt::Key_Left:
+            this->moveCursorLeft();
+            break;
+        case Qt::Key_Right:
+            this->moveCursorRight();
+            break;
+        case Qt::Key_Up:
+            this->moveCursorUp();
+            break;
+        case Qt::Key_Down:
+            this->moveCursorDown();
+            break;
+        default:
+            QWidget::keyPressEvent(event);
+
+    }
+    return;
+}
+
 bool MainWindow::ally(int current_row, int current_col, int other_row, int other_col)
 {
     if(player_indicator[current_row][current_col] == player_indicator[other_row][other_col])
@@ -581,6 +654,7 @@ bool MainWindow::selecting_empty()
     }
     return false;
 }
+
 void MainWindow::moveUp()
 {
     int row = selected_spot[0];
@@ -667,6 +741,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     p1_turn = true;
+    cursor[0] = 0;                  //sets base cursor at top left
+    cursor[1] = 0;
     selected_spot[0] = 1;
     selected_spot[1] = 0;
     for(int row = 0;row<6;row++)     //setup for board at very start of the game
