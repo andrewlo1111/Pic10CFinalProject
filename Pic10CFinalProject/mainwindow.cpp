@@ -571,12 +571,24 @@ bool MainWindow::ally(int current_row, int current_col, int other_row, int other
     return false;
 }
 
-
+bool MainWindow::selecting_empty()
+{
+    int row = selected_spot[0];
+    int col = selected_spot[1];
+    if(game_board[row][col] == empty && player_indicator[row][col] == none)
+    {
+        return true;
+    }
+    return false;
+}
 void MainWindow::moveUp()
 {
     int row = selected_spot[0];
     int col = selected_spot[1];
-
+    if(this->selecting_empty())    //cannot move if selecting empty spot
+    {
+        return;
+    }
     if(row != 0 && ally(row, col, row-1, col) == false )    //cannot move up if off board or to ally
     {
         game_board[row -1][col] = game_board[row][col];
@@ -593,6 +605,10 @@ void MainWindow::moveDown()
 {
     int row = selected_spot[0];
     int col = selected_spot[1];
+    if(this->selecting_empty())    //cannot move if selecting empty spot
+    {
+        return;
+    }
     if(row!=5 && ally(row, col, row+1, col) == false)
     {
         game_board[row + 1][col] = game_board[row][col];
@@ -608,6 +624,10 @@ void MainWindow::moveLeft()
 {
     int row = selected_spot[0];
     int col = selected_spot[1];
+    if(this->selecting_empty())    //cannot move if selecting empty spot
+    {
+        return;
+    }
     if(col!=0 ||ally(row, col, row, col -1) == false)
     {
         game_board[row][col-1] = game_board[row][col];
@@ -623,6 +643,10 @@ void MainWindow::moveRight()
 {
     int row = selected_spot[0];
     int col = selected_spot[1];
+    if(this->selecting_empty())    //cannot move if selecting empty spot
+    {
+        return;
+    }
     if(col!= 5 && ally(row, col, row, col+1) == false)
     {
         game_board[row][col+1] = game_board[row][col];
