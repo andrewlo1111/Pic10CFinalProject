@@ -564,14 +564,20 @@ void MainWindow::p2_train_unit()
 
 bool MainWindow::ally(int current_row, int current_col, int other_row, int other_col)
 {
-    return player_indicator[current_row][current_col] == player_indicator[other_row][other_col];
+    if(player_indicator[current_row][current_col] == player_indicator[other_row][other_col])
+    {
+        return true;
+    }
+    return false;
 }
+
 
 void MainWindow::moveUp()
 {
     int row = selected_spot[0];
     int col = selected_spot[1];
-    if(row != 0 || ally(row, col, row-1, col) )    //cannot move up if off board or to ally
+
+    if(row != 0 && ally(row, col, row-1, col) == false )    //cannot move up if off board or to ally
     {
         game_board[row -1][col] = game_board[row][col];
         game_board[row][col] = empty;
@@ -587,7 +593,7 @@ void MainWindow::moveDown()
 {
     int row = selected_spot[0];
     int col = selected_spot[1];
-    if(row!=5 || ally(row, col, row+1, col))
+    if(row!=5 && ally(row, col, row+1, col) == false)
     {
         game_board[row + 1][col] = game_board[row][col];
         game_board[row][col] = empty;
@@ -602,7 +608,7 @@ void MainWindow::moveLeft()
 {
     int row = selected_spot[0];
     int col = selected_spot[1];
-    if(col!=0 ||ally(row, col, row, col -1))
+    if(col!=0 ||ally(row, col, row, col -1) == false)
     {
         game_board[row][col-1] = game_board[row][col];
         game_board[row][col] = empty;
@@ -617,7 +623,7 @@ void MainWindow::moveRight()
 {
     int row = selected_spot[0];
     int col = selected_spot[1];
-    if(col!= 5 || ally(row, col, row, col+1))
+    if(col!= 5 && ally(row, col, row, col+1) == false)
     {
         game_board[row][col+1] = game_board[row][col];
         game_board[row][col] = empty;
