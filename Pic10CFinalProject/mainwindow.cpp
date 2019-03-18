@@ -265,22 +265,22 @@ bool Player::enough_resources(possible_unit unit)
 
 void MainWindow::end_turn_rewards(int player)
 {
-    if (player == 0)
+    if (player == 0)                                    //when player 2 ends turn
     {
         p1.add_money(p1.get_mine_count() * 100);
         p1.add_food(p1.get_farm_count() * 100);
+        potential_unit = Player::villager;              //resets default to villager
         change_select(1,0);
         p1_turn = true;
 
     }
-    if (player == 1)
+    if (player == 1)                                   //when player1 ends turn
     {
         p2.add_money(p2.get_mine_count() * 100);
         p2.add_food(p2.get_farm_count() * 100);
+        potential_unit = Player::villager;              //resets default to villager
         change_select(5,4);
         p1_turn = false;
-
-
     }
 
 }
