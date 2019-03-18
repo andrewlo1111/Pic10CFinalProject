@@ -155,7 +155,10 @@ public slots:
     void choosingUnit(QString selected_unit);
     void p1_train_unit();
     void p2_train_unit();
-    void move();
+    void moveUp();
+    void moveDown();
+    void moveLeft();
+    void moveRight();
 
 
 
@@ -180,6 +183,7 @@ private:
     //helper functions
     MainWindow::occupied convert_to_occupied(Player::possible_unit);
     void change_select(int row, int col);
+    bool ally(int current_row, int current_col, int other_row, int other_col);
 
 
 

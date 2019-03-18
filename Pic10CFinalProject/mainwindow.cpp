@@ -269,15 +269,18 @@ void MainWindow::end_turn_rewards(int player)
     {
         p1.add_money(p1.get_mine_count() * 100);
         p1.add_food(p1.get_farm_count() * 100);
-        p1_turn = false;
         change_select(1,0);
+        p1_turn = true;
+
     }
     if (player == 1)
     {
         p2.add_money(p2.get_mine_count() * 100);
         p2.add_food(p2.get_farm_count() * 100);
-        p1_turn = true;
         change_select(5,4);
+        p1_turn = false;
+
+
     }
 
 }
@@ -559,16 +562,72 @@ void MainWindow::p2_train_unit()
     }
 }
 
-void MainWindow::move()
+bool MainWindow::ally(int current_row, int current_col, int other_row, int other_col)
+{
+    return player_indicator[current_row][current_col] == player_indicator[other_row][other_col];
+}
+
+void MainWindow::moveUp()
 {
     int row = selected_spot[0];
     int col = selected_spot[1];
-    game_board[row + 1][col] = game_board[row][col];
-    game_board[row][col] = empty;
-    player_indicator[row+1][col] = player_indicator[row][col];
-    player_indicator[row][col] = none;
-    processandRepaint();
+    if(row != 0 || ally(row, col, row-1, col) )    //cannot move up if off board or to ally
+    {
+        game_board[row -1][col] = game_board[row][col];
+        game_board[row][col] = empty;
+        player_indicator[row-1][col]= player_indicator[row][col];
+        player_indicator[row][col] = none;
+        processandRepaint();
+    }
+    return;
+
 }
+
+void MainWindow::moveDown()
+{
+    int row = selected_spot[0];
+    int col = selected_spot[1];
+    if(row!=5 || ally(row, col, row+1, col))
+    {
+        game_board[row + 1][col] = game_board[row][col];
+        game_board[row][col] = empty;
+        player_indicator[row+1][col] = player_indicator[row][col];
+        player_indicator[row][col] = none;
+        processandRepaint();
+    }
+    return;
+}
+
+void MainWindow::moveLeft()
+{
+    int row = selected_spot[0];
+    int col = selected_spot[1];
+    if(col!=0 ||ally(row, col, row, col -1))
+    {
+        game_board[row][col-1] = game_board[row][col];
+        game_board[row][col] = empty;
+        player_indicator[row][col-1] = player_indicator[row][col];
+        player_indicator[row][col] = none;
+        processandRepaint();
+    }
+    return;
+}
+
+void MainWindow::moveRight()
+{
+    int row = selected_spot[0];
+    int col = selected_spot[1];
+    if(col!= 5 || ally(row, col, row, col+1))
+    {
+        game_board[row][col+1] = game_board[row][col];
+        game_board[row][col] = empty;
+        player_indicator[row][col-1] = player_indicator[row][col];
+        player_indicator[row][col] = none;
+        processandRepaint();
+    }
+    return;
+}
+
 
 
 
@@ -712,10 +771,26 @@ MainWindow::MainWindow(QWidget *parent) :
     control_window->addWidget(player_one_info);
     control_window->addWidget(player_two_info);
 
-    QPushButton *button = new QPushButton("move");
+    QPushButton *move_up_but = new QPushButton("Up");
+    QPushButton *move_down_but = new QPushButton("Down");
+    QPushButton *move_right_but = new QPushButton("Right");
+    QPushButton *move_left_but = new QPushButton("Left");
 
-    QObject::connect(button, SIGNAL(clicked()), this, SLOT(move()));
-    button->show();
+    QPushButton* move_arr[4] = {move_up_but, move_down_but, move_right_but, move_left_but};
+    QObject::connect(move_arr[0], SIGNAL(clicked()), this, SLOT(moveUp()));
+    QObject::connect(move_arr[1], SIGNAL(clicked()), this, SLOT(moveDown()));
+    QObject::connect(move_arr[2], SIGNAL(clicked()), this, SLOT(moveRight()));
+    QObject::connect(move_arr[3], SIGNAL(clicked()), this, SLOT(moveLeft()));
+
+    QWidget *move_window = new QWidget;
+    QHBoxLayout *move_lay = new QHBoxLayout;
+    for(int i=0;i<4;i++)
+    {
+        move_lay->addWidget(move_arr[i]);
+    }
+    move_window->setLayout(move_lay);
+    move_window->show();
+
 
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),control_window,SLOT(setCurrentIndex(int)));
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),this, SLOT(end_turn_rewards(int)));
