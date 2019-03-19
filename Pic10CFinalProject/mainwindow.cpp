@@ -97,7 +97,7 @@ TownCenter::TownCenter()
 
 
 
-Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_center_count(0), unit_list(0)
+Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_center_count(1), unit_list(0)
 {
     QLabel *money_label = new QLabel("Money: 100");
     QLabel *food_label = new QLabel("Food: 100");
@@ -125,6 +125,11 @@ void Player::buildFarm()
     farm_count += 1;
     QString text("Farms: " + QString::number(farm_count));
     label_arr[3]->setText(text);
+}
+
+void Player::buildTC()
+{
+    town_center_count += 1;
 }
 
 int Player::get_money()
@@ -606,7 +611,10 @@ void MainWindow::build_mine()
 {
     int cursor_row = cursor[0];
     int cursor_col = cursor[1];
-    if(game_board[cursor_row][cursor_col] == empty)
+    int selected_row = selected_spot[0];
+    int selected_col = selected_spot[1];
+    int distance = abs(selected_row - cursor_row) + abs(selected_col - cursor_col);
+    if(game_board[cursor_row][cursor_col] == empty && distance == 1 )      //build spot must be empty and adjacent to villager
     {
         if(p1_turn == true )
         {
@@ -626,9 +634,56 @@ void MainWindow::build_mine()
 }
 
 void MainWindow::build_farm()
-{}
+{
+    int cursor_row = cursor[0];
+    int cursor_col = cursor[1];
+    int selected_row = selected_spot[0];
+    int selected_col = selected_spot[1];
+    int distance = abs(selected_row - cursor_row) + abs(selected_col - cursor_col);
+    if(game_board[cursor_row][cursor_col] == empty && distance == 1 )      //build spot must be empty and adjacent to villager
+    {
+        if(p1_turn == true )
+        {
+            p1.buildFarm();
+            game_board[cursor_row][cursor_col] = farm;              //build at location of cursor
+            player_indicator[cursor_row][cursor_col] = player_one;
+            processandRepaint();
+        }
+        else
+        {
+            p2.buildFarm();
+            game_board[cursor_row][cursor_col] = farm;
+            player_indicator[cursor_row][cursor_col] = player_two;
+            processandRepaint();
+        }
+   }
+}
 
-void MainWindow::build_TC() {}
+void MainWindow::build_TC()
+{
+    int cursor_row = cursor[0];
+    int cursor_col = cursor[1];
+    int selected_row = selected_spot[0];
+    int selected_col = selected_spot[1];
+    int distance = abs(selected_row - cursor_row) + abs(selected_col - cursor_col);
+    if(game_board[cursor_row][cursor_col] == empty && distance == 1 )      //build spot must be empty and adjacent to villager
+    {
+        if(p1_turn == true )
+        {
+            p1.buildTC();
+            game_board[cursor_row][cursor_col] = town_center;              //build at location of cursor
+            player_indicator[cursor_row][cursor_col] = player_one;
+            processandRepaint();
+        }
+        else
+        {
+            p2.buildTC();
+            game_board[cursor_row][cursor_col] = town_center;
+            player_indicator[cursor_row][cursor_col] = player_two;
+            processandRepaint();
+        }
+   }
+}
 
 void MainWindow::moveCursorUp()
 {
@@ -802,7 +857,7 @@ MainWindow::MainWindow(QWidget *parent) :
     p1_turn = true;
     cursor[0] = 0;                  //sets base cursor at top left
     cursor[1] = 0;
-    selected_spot[0] = 1;
+    selected_spot[0] = 0;
     selected_spot[1] = 0;
     for(int row = 0;row<6;row++)     //setup for board at very start of the game
     {
@@ -938,15 +993,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QPushButton *move_up_but = new QPushButton("Up");
     QPushButton *move_down_but = new QPushButton("Down");
-    QPushButton *move_right_but = new QPushButton("Right");
     QPushButton *move_left_but = new QPushButton("Left");
+    QPushButton *move_right_but = new QPushButton("Right");
     QPushButton *enter_button = new QPushButton("Enter");
 
-    QPushButton* move_arr[5] = {move_up_but, move_down_but, move_right_but, move_left_but, enter_button};
+    QPushButton* move_arr[5] = {move_up_but, move_down_but, move_left_but, move_right_but,  enter_button};
     QObject::connect(move_arr[0], SIGNAL(clicked()), this, SLOT(moveCursorUp()));
     QObject::connect(move_arr[1], SIGNAL(clicked()), this, SLOT(moveCursorDown()));
-    QObject::connect(move_arr[2], SIGNAL(clicked()), this, SLOT(moveCursorRight()));
-    QObject::connect(move_arr[3], SIGNAL(clicked()), this, SLOT(moveCursorLeft()));
+    QObject::connect(move_arr[2], SIGNAL(clicked()), this, SLOT(moveCursorLeft()));
+    QObject::connect(move_arr[3], SIGNAL(clicked()), this, SLOT(moveCursorRight()));
     QObject::connect(move_arr[4], SIGNAL(clicked()), this, SLOT(select_to_cursor()));
 
     QWidget *move_window = new QWidget;

@@ -16,6 +16,7 @@
 #include <QString>
 #include <QKeyEvent>
 #include <iostream>
+#include <cmath>
 
 
 class Unit
@@ -104,6 +105,7 @@ public:
 
     void buildMine();
     void buildFarm();
+    void buildTC();
 
     int get_money();
     int get_food();
