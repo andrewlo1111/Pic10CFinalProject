@@ -170,8 +170,9 @@ public slots:
     void moveLeft();
     void moveRight();
 
-
-
+    void build_mine();
+    void build_farm();
+    void build_TC();
 
 private:
     Ui::MainWindow *ui;
@@ -198,7 +199,6 @@ private:
     //helper functions
     MainWindow::occupied convert_to_occupied(Player::possible_unit);
     void change_select(int row, int col);
-
     bool ally(int current_row, int current_col, int other_row, int other_col);
     bool selecting_empty();
 

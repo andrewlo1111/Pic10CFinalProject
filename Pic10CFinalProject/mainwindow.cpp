@@ -340,13 +340,38 @@ void MainWindow::change_select(int row, int col)
     selected_spot[0] = row;
     selected_spot[1] = col;
     processandRepaint();
+    if(game_board[row][col] == villager)
+    {
+        QWidget *build_window = new QWidget;
+        QVBoxLayout *build_lay = new QVBoxLayout;
+        QPushButton *build_mine = new QPushButton("Build Mine");
+        QPushButton *build_farm = new QPushButton("Build Farm");
+        QPushButton *build_tc = new QPushButton("Build TownCenter");
+
+        QPushButton* build_button_arr[3] = {build_mine, build_farm, build_tc};
+        for(int i=0;i<3;i++)
+        {
+            build_lay->addWidget(build_button_arr[i]);
+        }
+        QObject::connect(build_button_arr[0], SIGNAL(clicked()), this, SLOT(build_mine()));
+        QObject::connect(build_button_arr[1], SIGNAL(clicked()), this, SLOT(build_farm()));
+        QObject::connect(build_button_arr[2], SIGNAL(clicked()), this, SLOT(build_TC()));
+
+        build_window->setLayout(build_lay);
+        build_window->show();
+
+    }
 }
 
 void MainWindow::select_to_cursor()
 {
     int row = cursor[0];
     int col = cursor[1];
-    change_select(row, col);
+    //can only change select onto a spot that is not owned by enemy
+    if((p1_turn == true && player_indicator[row][col] == player_one) || (p1_turn == false && player_indicator[row][col] == player_two))
+    {
+        change_select(row, col);
+    }
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
@@ -576,6 +601,34 @@ void MainWindow::p2_train_unit()
         return;
     }
 }
+
+void MainWindow::build_mine()
+{
+    int cursor_row = cursor[0];
+    int cursor_col = cursor[1];
+    if(game_board[cursor_row][cursor_col] == empty)
+    {
+        if(p1_turn == true )
+        {
+            p1.buildMine();
+            game_board[cursor_row][cursor_col] = mine;              //build at location of cursor
+            player_indicator[cursor_row][cursor_col] = player_one;
+            processandRepaint();
+        }
+        else
+        {
+            p2.buildMine();
+            game_board[cursor_row][cursor_col] = mine;
+            player_indicator[cursor_row][cursor_col] = player_two;
+            processandRepaint();
+        }
+   }
+}
+
+void MainWindow::build_farm()
+{}
+
+void MainWindow::build_TC() {}
 
 void MainWindow::moveCursorUp()
 {
