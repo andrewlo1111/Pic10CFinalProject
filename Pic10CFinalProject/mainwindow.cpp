@@ -116,6 +116,8 @@ Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_cente
 void Player::buildMine()
 {
     mine_count += 1;
+    add_money(-100);
+    add_food(-100);
     QString text("Mines: " + QString::number(mine_count));
     label_arr[2]->setText(text);
 }
@@ -123,6 +125,8 @@ void Player::buildMine()
 void Player::buildFarm()
 {
     farm_count += 1;
+    add_money(-100);
+    add_food(-100);
     QString text("Farms: " + QString::number(farm_count));
     label_arr[3]->setText(text);
 }
@@ -130,6 +134,8 @@ void Player::buildFarm()
 void Player::buildTC()
 {
     town_center_count += 1;
+    add_money(-100);
+    add_food(-100);
 }
 
 int Player::get_money()
@@ -150,6 +156,11 @@ int Player::get_mine_count()
 int Player::get_farm_count()
 {
     return farm_count;
+}
+
+int Player::get_town_center_count()
+{
+    return town_center_count;
 }
 
 unsigned int Player::get_unit_count()
@@ -272,8 +283,8 @@ void MainWindow::end_turn_rewards(int player)
 {
     if (player == 0)                                    //when player 2 ends turn
     {
-        p1.add_money(p1.get_mine_count() * 100);
-        p1.add_food(p1.get_farm_count() * 100);
+        p1.add_money(p1.get_mine_count() * 100 + p1.get_town_center_count() *50);
+        p1.add_food(p1.get_farm_count() * 100 + p1.get_town_center_count() * 50);
         potential_unit = Player::villager;              //resets default to villager
         change_select(1,0);
         p1_turn = true;
@@ -281,8 +292,8 @@ void MainWindow::end_turn_rewards(int player)
     }
     if (player == 1)                                   //when player1 ends turn
     {
-        p2.add_money(p2.get_mine_count() * 100);
-        p2.add_food(p2.get_farm_count() * 100);
+        p2.add_money(p2.get_mine_count() * 100 + p2.get_town_center_count() * 50);
+        p2.add_food(p2.get_farm_count() * 100 + p2.get_town_center_count() * 50);
         potential_unit = Player::villager;              //resets default to villager
         change_select(5,4);
         p1_turn = false;

@@ -111,6 +111,7 @@ public:
     int get_food();
     int get_mine_count();
     int get_farm_count();
+    int get_town_center_count();
     unsigned int get_unit_count();
     std::vector<QLabel*> get_label_arr();
 
