@@ -827,7 +827,7 @@ void MainWindow::moveLeft()
     {
         return;
     }
-    if(col!=0 ||ally(row, col, row, col -1) == false)
+    if(col!=0 && ally(row, col, row, col -1) == false)
     {
         game_board[row][col-1] = game_board[row][col];
         game_board[row][col] = empty;
@@ -1009,10 +1009,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QPushButton *enter_button = new QPushButton("Enter");
 
     QPushButton* move_arr[5] = {move_up_but, move_down_but, move_left_but, move_right_but,  enter_button};
-    QObject::connect(move_arr[0], SIGNAL(clicked()), this, SLOT(moveCursorUp()));
-    QObject::connect(move_arr[1], SIGNAL(clicked()), this, SLOT(moveCursorDown()));
-    QObject::connect(move_arr[2], SIGNAL(clicked()), this, SLOT(moveCursorLeft()));
-    QObject::connect(move_arr[3], SIGNAL(clicked()), this, SLOT(moveCursorRight()));
+    QObject::connect(move_arr[0], SIGNAL(clicked()), this, SLOT(moveUp()));
+    QObject::connect(move_arr[1], SIGNAL(clicked()), this, SLOT(moveDown()));
+    QObject::connect(move_arr[2], SIGNAL(clicked()), this, SLOT(moveLeft()));
+    QObject::connect(move_arr[3], SIGNAL(clicked()), this, SLOT(moveRight()));
     QObject::connect(move_arr[4], SIGNAL(clicked()), this, SLOT(select_to_cursor()));
 
     QWidget *move_window = new QWidget;
