@@ -40,7 +40,7 @@ class Villager: public Unit
 {
 public:
     Villager();
-    void build(int row, int col);
+    //void build(int row, int col);
 
 };
 
@@ -147,6 +147,8 @@ public:
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void keyPressEvent(QKeyEvent *event);
+
 
 public slots:
     void end_turn_rewards(int player);        //int passed determines which player gets the benefit
@@ -161,6 +163,7 @@ public slots:
     void moveCursorDown();
     void moveCursorLeft();
     void moveCursorRight();
+    void select_to_cursor();
 
     void moveUp();
     void moveDown();
@@ -190,11 +193,12 @@ private:
     void highlight_selected(QPainter *painter);
     void highlight_cursor(QPainter *painter);
 
-    void keyPressEvent(QKeyEvent *event);
+
 
     //helper functions
     MainWindow::occupied convert_to_occupied(Player::possible_unit);
     void change_select(int row, int col);
+
     bool ally(int current_row, int current_col, int other_row, int other_col);
     bool selecting_empty();
 

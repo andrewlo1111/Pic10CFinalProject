@@ -48,11 +48,11 @@ Villager::Villager()
     defense = 0.5;
 }
 
-
+/*
 void Villager::build(int row, int col)
 {
     //build the building at specific row and col
-}
+}*/
 
 Warrior::Warrior()
 {
@@ -342,6 +342,13 @@ void MainWindow::change_select(int row, int col)
     processandRepaint();
 }
 
+void MainWindow::select_to_cursor()
+{
+    int row = cursor[0];
+    int col = cursor[1];
+    change_select(row, col);
+}
+
 void MainWindow::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e);
@@ -369,8 +376,6 @@ void MainWindow::drawMap(QPainter *painter)
         painter->drawLine(0, i*50, 300, i*50);                   //change spots by 50
         painter->drawLine(i*50, 0, i*50, 300);
     }
-
-
 }
 
 void MainWindow::drawUnits(QPainter *painter)
@@ -586,7 +591,7 @@ void MainWindow::moveCursorDown()
 {
     if(cursor[0] < 5 )
     {
-        cursor[1] += 1;
+        cursor[0] += 1;
         processandRepaint();
     }
     return;
@@ -596,7 +601,7 @@ void MainWindow::moveCursorLeft()
 {
     if(cursor[1] > 0)
     {
-        cursor[0] -= 1;
+        cursor[1] -= 1;
         processandRepaint();
     }
     return;
@@ -628,11 +633,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Down:
             this->moveCursorDown();
             break;
+        case Qt::Key_Enter:
+            this->select_to_cursor();
+            break;
         default:
             QWidget::keyPressEvent(event);
-
     }
-    return;
 }
 
 bool MainWindow::ally(int current_row, int current_col, int other_row, int other_col)
@@ -881,16 +887,18 @@ MainWindow::MainWindow(QWidget *parent) :
     QPushButton *move_down_but = new QPushButton("Down");
     QPushButton *move_right_but = new QPushButton("Right");
     QPushButton *move_left_but = new QPushButton("Left");
+    QPushButton *enter_button = new QPushButton("Enter");
 
-    QPushButton* move_arr[4] = {move_up_but, move_down_but, move_right_but, move_left_but};
-    QObject::connect(move_arr[0], SIGNAL(clicked()), this, SLOT(moveUp()));
-    QObject::connect(move_arr[1], SIGNAL(clicked()), this, SLOT(moveDown()));
-    QObject::connect(move_arr[2], SIGNAL(clicked()), this, SLOT(moveRight()));
-    QObject::connect(move_arr[3], SIGNAL(clicked()), this, SLOT(moveLeft()));
+    QPushButton* move_arr[5] = {move_up_but, move_down_but, move_right_but, move_left_but, enter_button};
+    QObject::connect(move_arr[0], SIGNAL(clicked()), this, SLOT(moveCursorUp()));
+    QObject::connect(move_arr[1], SIGNAL(clicked()), this, SLOT(moveCursorDown()));
+    QObject::connect(move_arr[2], SIGNAL(clicked()), this, SLOT(moveCursorRight()));
+    QObject::connect(move_arr[3], SIGNAL(clicked()), this, SLOT(moveCursorLeft()));
+    QObject::connect(move_arr[4], SIGNAL(clicked()), this, SLOT(select_to_cursor()));
 
     QWidget *move_window = new QWidget;
     QHBoxLayout *move_lay = new QHBoxLayout;
-    for(int i=0;i<4;i++)
+    for(int i=0;i<5;i++)
     {
         move_lay->addWidget(move_arr[i]);
     }
