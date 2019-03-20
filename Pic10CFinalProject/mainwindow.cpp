@@ -743,29 +743,80 @@ void MainWindow::moveCursorRight()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    switch(event->key())
+    int cursor_row = cursor[0];
+    int cursor_col = cursor[1];
+    int select_row = selected_spot[0];
+    int select_col = selected_spot[1];
+    bool same_spot = false;
+    if(cursor_row == select_row && cursor_col == select_col)
     {
-        case Qt::Key_Left:
-            this->moveCursorLeft();
-            break;
-        case Qt::Key_Right:
-            this->moveCursorRight();
-            break;
-        case Qt::Key_Up:
-            this->moveCursorUp();
-            break;
-        case Qt::Key_Down:
-            this->moveCursorDown();
-            break;
-        case Qt::Key_Enter:
-            this->select_to_cursor();
-            break;
-        default:
-            QWidget::keyPressEvent(event);
+        same_spot = true;
     }
+
+    auto is_unit = [this,cursor_row,cursor_col](){
+        if(game_board[cursor_row][cursor_col] == town_center)
+        {
+            return false;
+        }
+        else if(game_board[cursor_row][cursor_col] == mine)
+        {
+            return false;
+        }
+        else if (game_board[cursor_row][cursor_col] == farm)
+        {
+            return false;
+        }
+        else if(game_board[cursor_row][cursor_col] == empty)
+        {
+            return false;
+        }
+        return true;
+    };
+    if(same_spot == true && is_unit())
+    {
+        switch(event->key())
+        {
+            case Qt::Key_Left:
+                this->moveLeft();
+                break;
+            case Qt::Key_Right:
+                this->moveRight();
+                break;
+            case Qt::Key_Up:
+                this->moveUp();
+                break;
+            case Qt::Key_Down:
+                this->moveDown();
+        }
+    }
+    else
+    {
+        switch(event->key())
+        {
+            case Qt::Key_Left:
+                this->moveCursorLeft();
+                break;
+            case Qt::Key_Right:
+                this->moveCursorRight();
+                break;
+            case Qt::Key_Up:
+                this->moveCursorUp();
+                break;
+            case Qt::Key_Down:
+                this->moveCursorDown();
+                break;
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
+                this->select_to_cursor();
+                break;
+            default:
+                QWidget::keyPressEvent(event);
+        }
+    }
+
 }
 
-bool MainWindow::ally(int current_row, int current_col, int other_row, int other_col)
+bool MainWindow::is_ally(int current_row, int current_col, int other_row, int other_col)
 {
     if(player_indicator[current_row][current_col] == player_indicator[other_row][other_col])
     {
@@ -793,7 +844,7 @@ void MainWindow::moveUp()
     {
         return;
     }
-    if(row != 0 && ally(row, col, row-1, col) == false )    //cannot move up if off board or to ally
+    if(row != 0 && is_ally(row, col, row-1, col) == false )    //cannot move up if off board or to ally
     {
         game_board[row -1][col] = game_board[row][col];
         game_board[row][col] = empty;
@@ -813,7 +864,7 @@ void MainWindow::moveDown()
     {
         return;
     }
-    if(row!=5 && ally(row, col, row+1, col) == false)
+    if(row!=5 && is_ally(row, col, row+1, col) == false)
     {
         game_board[row + 1][col] = game_board[row][col];
         game_board[row][col] = empty;
@@ -832,7 +883,7 @@ void MainWindow::moveLeft()
     {
         return;
     }
-    if(col!=0 && ally(row, col, row, col -1) == false)
+    if(col!=0 && is_ally(row, col, row, col -1) == false)
     {
         game_board[row][col-1] = game_board[row][col];
         game_board[row][col] = empty;
@@ -851,7 +902,7 @@ void MainWindow::moveRight()
     {
         return;
     }
-    if(col!= 5 && ally(row, col, row, col+1) == false)
+    if(col!= 5 && is_ally(row, col, row, col+1) == false)
     {
         game_board[row][col+1] = game_board[row][col];
         game_board[row][col] = empty;
