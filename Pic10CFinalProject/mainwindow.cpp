@@ -361,18 +361,20 @@ void MainWindow::change_select(int row, int col)
     if(game_board[row][col] == villager)
     {
         QVBoxLayout *build_lay = new QVBoxLayout;
+        QPushButton *move = new QPushButton("Move");
         QPushButton *build_mine = new QPushButton("Build Mine");
         QPushButton *build_farm = new QPushButton("Build Farm");
         QPushButton *build_tc = new QPushButton("Build TownCenter");
 
-        QPushButton* build_button_arr[3] = {build_mine, build_farm, build_tc};
-        for(int i=0;i<3;i++)
+        QPushButton* build_button_arr[4] = {move, build_mine, build_farm, build_tc};
+        for(int i=0;i<4;i++)
         {
             build_lay->addWidget(build_button_arr[i]);
         }
-        QObject::connect(build_button_arr[0], SIGNAL(clicked()), this, SLOT(build_mine()));
-        QObject::connect(build_button_arr[1], SIGNAL(clicked()), this, SLOT(build_farm()));
-        QObject::connect(build_button_arr[2], SIGNAL(clicked()), this, SLOT(build_TC()));
+        QObject::connect(build_button_arr[0], SIGNAL(clicked()), this, SLOT(hide_build_window()));
+        QObject::connect(build_button_arr[1], SIGNAL(clicked()), this, SLOT(build_mine()));
+        QObject::connect(build_button_arr[2], SIGNAL(clicked()), this, SLOT(build_farm()));
+        QObject::connect(build_button_arr[3], SIGNAL(clicked()), this, SLOT(build_TC()));
 
         this->build_window->setLayout(build_lay);
         this->build_window->show();
@@ -382,6 +384,11 @@ void MainWindow::change_select(int row, int col)
         this->build_window->hide();
     }
 
+}
+
+void MainWindow::hide_build_window()
+{
+    this->build_window->hide();
 }
 
 void MainWindow::select_to_cursor()
@@ -753,26 +760,26 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         same_spot = true;
     }
 
-    auto is_unit = [this,cursor_row,cursor_col](){
-        if(game_board[cursor_row][cursor_col] == town_center)
+    auto is_movable_unit = [this,cursor_row,cursor_col](){
+        if(game_board[cursor_row][cursor_col] == warrior)
         {
-            return false;
+            return true;
         }
-        else if(game_board[cursor_row][cursor_col] == mine)
+        else if(game_board[cursor_row][cursor_col] == archer)
         {
-            return false;
+            return true;
         }
-        else if (game_board[cursor_row][cursor_col] == farm)
+        else if (game_board[cursor_row][cursor_col] == knight)
         {
-            return false;
+            return true;
         }
-        else if(game_board[cursor_row][cursor_col] == empty)
+        else if (game_board[cursor_row][cursor_col]== villager && build_window->isHidden())
         {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     };
-    if(same_spot == true && is_unit())
+    if(same_spot == true && is_movable_unit())
     {
         switch(event->key())
         {

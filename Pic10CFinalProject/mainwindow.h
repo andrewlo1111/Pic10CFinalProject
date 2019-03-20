@@ -161,6 +161,7 @@ public slots:
     void choosingUnit(QString selected_unit);
     void p1_train_unit();
     void p2_train_unit();
+    void hide_build_window();
 
     void moveCursorUp();
     void moveCursorDown();
@@ -205,6 +206,7 @@ private:
     void change_select(int row, int col);
     bool is_ally(int current_row, int current_col, int other_row, int other_col);
     bool selecting_empty();
+
 
 };
 
