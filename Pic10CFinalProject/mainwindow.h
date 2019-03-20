@@ -187,6 +187,7 @@ private:
     MainWindow::owner player_indicator[6][6];           //indicates who owns the unit on board
     int selected_spot[2];                                   //first element will be row, second element will be column
     int cursor[2];                                          //first element is row, second element is column
+    QWidget *build_window = new QWidget;
 
 
     //painting functions

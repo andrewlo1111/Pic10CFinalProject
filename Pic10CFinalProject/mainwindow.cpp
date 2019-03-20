@@ -355,10 +355,11 @@ void MainWindow::change_select(int row, int col)
 {
     selected_spot[0] = row;
     selected_spot[1] = col;
+
+
     processandRepaint();
     if(game_board[row][col] == villager)
     {
-        QWidget *build_window = new QWidget;
         QVBoxLayout *build_lay = new QVBoxLayout;
         QPushButton *build_mine = new QPushButton("Build Mine");
         QPushButton *build_farm = new QPushButton("Build Farm");
@@ -373,10 +374,14 @@ void MainWindow::change_select(int row, int col)
         QObject::connect(build_button_arr[1], SIGNAL(clicked()), this, SLOT(build_farm()));
         QObject::connect(build_button_arr[2], SIGNAL(clicked()), this, SLOT(build_TC()));
 
-        build_window->setLayout(build_lay);
-        build_window->show();
-
+        this->build_window->setLayout(build_lay);
+        this->build_window->show();
     }
+
+    else {
+        this->build_window->hide();
+    }
+
 }
 
 void MainWindow::select_to_cursor()
@@ -850,7 +855,7 @@ void MainWindow::moveRight()
     {
         game_board[row][col+1] = game_board[row][col];
         game_board[row][col] = empty;
-        player_indicator[row][col-1] = player_indicator[row][col];
+        player_indicator[row][col+1] = player_indicator[row][col];
         player_indicator[row][col] = none;
         processandRepaint();
     }
