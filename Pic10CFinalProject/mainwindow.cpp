@@ -304,7 +304,7 @@ void MainWindow::end_turn_rewards(int player)
         change_select(1,0);
         p1.reset_move();
         p1_turn = true;
-
+        update_labels(player);
     }
     if (player == 1)                                   //when player1 ends turn
     {
@@ -314,6 +314,7 @@ void MainWindow::end_turn_rewards(int player)
         change_select(5,4);
         p2.reset_move();
         p1_turn = false;
+        update_labels(player);
     }
 
 }
@@ -326,9 +327,10 @@ void MainWindow::update_labels(int player)
         QString food_text("Food: " + QString::number(p1.get_food()));
         QString mine_text("Mines: " + QString::number(p1.get_mine_count()));
         QString farm_text("Farms: " + QString::number(p1.get_farm_count()));
-        QString unit_text("Moves: " + QString::number(p1.get_move_count()));
+        QString moves_text("Moves: " + QString::number(p1.get_move_count()));
 
-        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, unit_text};
+
+        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, moves_text};
 
         std::vector<QLabel*> label_vector = p1.get_label_arr();
 
@@ -344,10 +346,9 @@ void MainWindow::update_labels(int player)
         QString food_text("Food: " + QString::number(p2.get_food()));
         QString mine_text("Mines: " + QString::number(p2.get_mine_count()));
         QString farm_text("Farms: " + QString::number(p2.get_farm_count()));
-        QString unit_text("Moves: " + QString::number(p2.get_move_count()));
+        QString moves_text("Moves: " + QString::number(p2.get_move_count()));
 
-
-        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, unit_text};
+        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, moves_text};
 
         std::vector<QLabel*> label_vector = p2.get_label_arr();
 
@@ -358,6 +359,19 @@ void MainWindow::update_labels(int player)
     }
 }
 
+void MainWindow::update_move()
+{
+    if(p1_turn == true)
+    {
+        QString moves_text("Moves: " + QString::number(p1.get_move_count()));
+        p1.get_label_arr()[4]->setText(moves_text);
+    }
+    else
+    {
+        QString moves_text("Moves: " + QString::number(p2.get_move_count()));
+        p2.get_label_arr()[4]->setText(moves_text);
+    }
+}
 
 
 void MainWindow::change_select(int row, int col)
@@ -862,6 +876,7 @@ void MainWindow::move_complete()
     {
         p2.used_move();
     }
+    update_move();
 }
 
 void MainWindow::moveUp()
@@ -889,6 +904,7 @@ void MainWindow::moveUp()
         processandRepaint();
     }
     move_complete();
+
     return;
 
 }
@@ -1147,7 +1163,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),control_window,SLOT(setCurrentIndex(int)));
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),this, SLOT(end_turn_rewards(int)));
-    QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)), this, SLOT(update_labels(int)));
+
 
     QObject::connect(select_unit, SIGNAL(currentIndexChanged(QString)), this, SLOT(choosingUnit(QString)));
     QObject::connect(p1_train_unit_button, SIGNAL(clicked()), this, SLOT(p1_train_unit()));
