@@ -97,7 +97,7 @@ TownCenter::TownCenter()
 
 
 
-Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_center_count(1), unit_list(0)
+Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_center_count(1), unit_list(0), move_count(3)
 {
     QLabel *money_label = new QLabel("Money: 100");
     QLabel *food_label = new QLabel("Food: 100");
@@ -173,6 +173,11 @@ std::vector<QLabel*> Player::get_label_arr()
     return label_arr;
 }
 
+int Player::get_move_count()
+{
+    return move_count;
+}
+
 bool Player::lose()
 {
     if(get_unit_count() == 0 && town_center_count == 0 )
@@ -237,6 +242,16 @@ void Player::train_unit(possible_unit new_unit)
 
 }
 
+void Player::used_move()
+{
+    move_count--;
+}
+
+void Player::reset_move()
+{
+    move_count = 3;
+}
+
 bool Player::enough_resources(possible_unit unit)
 {
     switch(unit)
@@ -287,6 +302,7 @@ void MainWindow::end_turn_rewards(int player)
         p1.add_food(p1.get_farm_count() * 100 + p1.get_town_center_count() * 50);
         potential_unit = Player::villager;              //resets default to villager
         change_select(1,0);
+        p1.reset_move();
         p1_turn = true;
 
     }
@@ -296,6 +312,7 @@ void MainWindow::end_turn_rewards(int player)
         p2.add_food(p2.get_farm_count() * 100 + p2.get_town_center_count() * 50);
         potential_unit = Player::villager;              //resets default to villager
         change_select(5,4);
+        p2.reset_move();
         p1_turn = false;
     }
 
@@ -843,8 +860,28 @@ bool MainWindow::selecting_empty()
     return false;
 }
 
+void MainWindow::move_complete()
+{
+    if(p1_turn == true)
+    {
+        p1.used_move();
+    }
+    else
+    {
+        p2.used_move();
+    }
+}
+
 void MainWindow::moveUp()
 {
+    if(p1_turn == true && p1.get_move_count() == 0)
+    {
+        return;
+    }
+    else if(p1_turn == false && p2.get_move_count() == 0)
+    {
+        return;
+    }
     int row = selected_spot[0];
     int col = selected_spot[1];
     if(this->selecting_empty())    //cannot move if selecting empty spot
@@ -859,12 +896,21 @@ void MainWindow::moveUp()
         player_indicator[row][col] = none;
         processandRepaint();
     }
+    move_complete();
     return;
 
 }
 
 void MainWindow::moveDown()
 {
+    if(p1_turn == true && p1.get_move_count() == 0)
+    {
+        return;
+    }
+    else if(p1_turn == false && p2.get_move_count() == 0)
+    {
+        return;
+    }
     int row = selected_spot[0];
     int col = selected_spot[1];
     if(this->selecting_empty())    //cannot move if selecting empty spot
@@ -879,11 +925,20 @@ void MainWindow::moveDown()
         player_indicator[row][col] = none;
         processandRepaint();
     }
+    move_complete();
     return;
 }
 
 void MainWindow::moveLeft()
 {
+    if(p1_turn == true && p1.get_move_count() == 0)
+    {
+        return;
+    }
+    else if(p1_turn == false && p2.get_move_count() == 0)
+    {
+        return;
+    }
     int row = selected_spot[0];
     int col = selected_spot[1];
     if(this->selecting_empty())    //cannot move if selecting empty spot
@@ -898,11 +953,20 @@ void MainWindow::moveLeft()
         player_indicator[row][col] = none;
         processandRepaint();
     }
+    move_complete();
     return;
 }
 
 void MainWindow::moveRight()
 {
+    if(p1_turn == true && p1.get_move_count() == 0)
+    {
+        return;
+    }
+    else if(p1_turn == false && p2.get_move_count() == 0)
+    {
+        return;
+    }
     int row = selected_spot[0];
     int col = selected_spot[1];
     if(this->selecting_empty())    //cannot move if selecting empty spot
@@ -917,6 +981,7 @@ void MainWindow::moveRight()
         player_indicator[row][col] = none;
         processandRepaint();
     }
+    move_complete();
     return;
 }
 

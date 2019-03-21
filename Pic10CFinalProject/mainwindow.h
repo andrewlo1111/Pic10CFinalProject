@@ -112,6 +112,7 @@ public:
     int get_mine_count();
     int get_farm_count();
     int get_town_center_count();
+    int get_move_count();
     unsigned int get_unit_count();
     std::vector<QLabel*> get_label_arr();
 
@@ -122,6 +123,8 @@ public:
     void add_money(int amount);
     void add_food(int amount);
     void train_unit(possible_unit new_unit);
+    void used_move();
+    void reset_move();
 
 
 private:
@@ -132,6 +135,7 @@ private:
     int town_center_count;
     std::vector<QLabel*> label_arr;
     std::vector<Unit> unit_list;
+    int move_count;
 
 
 };
@@ -198,6 +202,7 @@ private:
     void drawUnits(QPainter *painter);
     void highlight_selected(QPainter *painter);
     void highlight_cursor(QPainter *painter);
+    void move_complete();
 
 
 
