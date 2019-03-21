@@ -160,8 +160,6 @@ public:
 public slots:
     void end_turn_rewards(int player);        //int passed determines which player gets the benefit
     void update_labels(int player);
-    void p1_update_units();
-    void p2_update_units();
     void choosingUnit(QString selected_unit);
     void p1_train_unit();
     void p2_train_unit();

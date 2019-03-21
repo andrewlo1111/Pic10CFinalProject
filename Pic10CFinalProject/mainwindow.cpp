@@ -103,13 +103,13 @@ Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_cente
     QLabel *food_label = new QLabel("Food: 100");
     QLabel *mine_label = new QLabel("Mines: 0");
     QLabel *farm_label = new QLabel("Farms: 0");
-    QLabel *unit_label = new QLabel("Unit Count: 0");
+    QLabel *move_label = new QLabel("Moves: 3");
 
     label_arr.push_back(money_label);
     label_arr.push_back(food_label);
     label_arr.push_back(mine_label);
     label_arr.push_back(farm_label);
-    label_arr.push_back(unit_label);
+    label_arr.push_back(move_label);
 
 }
 
@@ -326,12 +326,13 @@ void MainWindow::update_labels(int player)
         QString food_text("Food: " + QString::number(p1.get_food()));
         QString mine_text("Mines: " + QString::number(p1.get_mine_count()));
         QString farm_text("Farms: " + QString::number(p1.get_farm_count()));
+        QString unit_text("Moves: " + QString::number(p1.get_move_count()));
 
-        QString text_arr[4] = {money_text, food_text, mine_text, farm_text};
+        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, unit_text};
 
         std::vector<QLabel*> label_vector = p1.get_label_arr();
 
-        for(unsigned int i=0;i<4;i++)
+        for(unsigned int i=0;i<5;i++)
         {
             label_vector[i]->setText(text_arr[i]);
         }
@@ -343,30 +344,21 @@ void MainWindow::update_labels(int player)
         QString food_text("Food: " + QString::number(p2.get_food()));
         QString mine_text("Mines: " + QString::number(p2.get_mine_count()));
         QString farm_text("Farms: " + QString::number(p2.get_farm_count()));
+        QString unit_text("Moves: " + QString::number(p2.get_move_count()));
 
 
-        QString text_arr[4] = {money_text, food_text, mine_text, farm_text};
+        QString text_arr[5] = {money_text, food_text, mine_text, farm_text, unit_text};
 
         std::vector<QLabel*> label_vector = p2.get_label_arr();
 
-        for(unsigned int i=0;i<4;i++)
+        for(unsigned int i=0;i<5;i++)
         {
             label_vector[i]->setText(text_arr[i]);
         }
     }
 }
 
-void MainWindow::p1_update_units()
-{
-    QString unit_text("Unit Count: " + QString::number(p1.get_unit_count()));
-    p1.get_label_arr()[4]->setText(unit_text);
-}
 
-void MainWindow::p2_update_units()
-{
-    QString unit_text("Unit Count: " + QString::number(p2.get_unit_count()));
-    p2.get_label_arr()[4]->setText(unit_text);
-}
 
 void MainWindow::change_select(int row, int col)
 {
@@ -1159,11 +1151,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(select_unit, SIGNAL(currentIndexChanged(QString)), this, SLOT(choosingUnit(QString)));
     QObject::connect(p1_train_unit_button, SIGNAL(clicked()), this, SLOT(p1_train_unit()));
-    QObject::connect(p1_train_unit_button, SIGNAL(clicked()), this, SLOT(p1_update_units()));
 
     QObject::connect(select_unit2, SIGNAL(currentIndexChanged(QString)), this, SLOT(choosingUnit(QString)));
     QObject::connect(p2_train_unit_button, SIGNAL(clicked()), this, SLOT(p2_train_unit()));
-    QObject::connect(p2_train_unit_button, SIGNAL(clicked()), this, SLOT(p2_update_units()));
 
     QObject::connect(train_unit_buttons, SIGNAL(buttonClicked(int)), this, SLOT(update_labels(int)));
 
