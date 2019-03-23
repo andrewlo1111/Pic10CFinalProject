@@ -172,6 +172,26 @@ void Player::add_food(int amount)
     food += amount;
 }
 
+void Player::town_center_destroyed()
+{
+    town_center_count--;
+}
+
+void Player::mine_destroyed()
+{
+    mine_count--;
+}
+
+void Player::farm_destroyed()
+{
+    farm_count--;
+}
+
+void Player::unit_died()
+{
+    unit_count--;
+}
+
 void Player::train_unit(possible_unit new_unit)
 {
     if(enough_resources(new_unit)== false)
@@ -888,6 +908,7 @@ void MainWindow::attack(int other_row, int other_col)
     {
         attack_unit(other_row, other_col);
     }
+    processandRepaint();
 }
 
 void MainWindow::attack_building(int other_row, int other_col)
@@ -901,9 +922,42 @@ void MainWindow::attack_building(int other_row, int other_col)
     }
     else
     {
+        MainWindow::occupied destroyed = game_board[other_row][other_col];
+        if(destroyed == town_center)
+        {
+            if(p1_turn == true)
+            {
+                p2.town_center_destroyed();
+            }
+            else
+            {
+                p1.town_center_destroyed();
+            }
+        }
+        else if(destroyed == mine)
+        {
+            if(p1_turn == true)
+            {
+                p2.mine_destroyed();
+            }
+            else
+            {
+                p1.mine_destroyed();
+            }
+        }
+        else if(destroyed == farm)
+        {
+            if(p1_turn == true)
+            {
+                p2.farm_destroyed();
+            }
+            else
+            {
+                p1.farm_destroyed();
+            }
+        }
         game_board[other_row][other_col] = empty;           //building instantly destroyed
         player_indicator[other_row][other_col] = none;
-        processandRepaint();
     }
 }
 
@@ -959,11 +1013,27 @@ void MainWindow::attack_unit(int other_row, int other_col)
         game_board[current_row][current_col] = empty;
         player_indicator[other_row][other_col] = player_indicator[current_row][current_col];
         player_indicator[current_row][current_col]= none;
+        if(p1_turn == true)
+        {
+            p2.unit_died();
+        }
+        else
+        {
+            p1.unit_died();
+        }
     }
     else                                                    //attacker losing means spot now is empty
     {
         game_board[current_row][current_col] = empty;
         player_indicator[current_row][current_col] = none;
+        if(p1_turn == true)
+        {
+            p1.unit_died();
+        }
+        else
+        {
+            p2.unit_died();
+        }
     }
 }
 

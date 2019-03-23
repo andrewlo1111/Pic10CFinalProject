@@ -119,6 +119,10 @@ public:
 
     void add_money(int amount);
     void add_food(int amount);
+    void town_center_destroyed();
+    void mine_destroyed();
+    void farm_destroyed();
+    void unit_died();
     void train_unit(possible_unit new_unit);
     void used_move();
     void reset_move();
