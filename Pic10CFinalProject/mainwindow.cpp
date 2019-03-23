@@ -818,7 +818,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 QWidget::keyPressEvent(event);
         }
     }
-
 }
 
 bool MainWindow::is_ally(int other_row, int other_col)
@@ -885,6 +884,19 @@ void MainWindow::move_complete()
     update_move();
 }
 
+void MainWindow::attack(int other_row, int other_col)
+{
+    MainWindow::occupied enemy = game_board[other_row][other_col];
+    if(enemy == town_center || enemy == mine || enemy == farm)
+    {
+        attack_building(other_row, other_col);
+    }
+    else
+    {
+        attack_unit(other_row, other_col);
+    }
+}
+
 void MainWindow::attack_building(int other_row, int other_col)
 {
     int current_row = selected_spot[0];
@@ -898,10 +910,11 @@ void MainWindow::attack_building(int other_row, int other_col)
     {
         game_board[other_row][other_col] = empty;           //building instantly destroyed
         player_indicator[other_row][other_col] = none;
+        processandRepaint();
     }
 }
 
-void MainWindow::battle_unit(int other_row, int other_col)
+void MainWindow::attack_unit(int other_row, int other_col)
 {
     Villager v;
     Warrior w;
@@ -993,7 +1006,7 @@ void MainWindow::moveUp()
     }
     else if(is_enemy(desired_row,desired_col) == true)
     {
-        battle_unit(desired_row, desired_col);
+        attack(desired_row, desired_col);
     }
     move_complete();
 
@@ -1033,7 +1046,7 @@ void MainWindow::moveDown()
     }
     else if(is_enemy(desired_row,desired_col) == true)
     {
-        battle_unit(desired_row,desired_col);
+        attack(desired_row,desired_col);
     }
     move_complete();
     return;
@@ -1071,7 +1084,7 @@ void MainWindow::moveLeft()
     }
     else if(is_enemy(desired_row, desired_col)== true)
     {
-        battle_unit(desired_row, desired_col);
+        attack(desired_row, desired_col);
     }
     move_complete();
     return;
@@ -1109,7 +1122,7 @@ void MainWindow::moveRight()
     }
     else if(is_enemy(desired_row, desired_col) == true)
     {
-        battle_unit(desired_row,desired_col);
+        attack(desired_row,desired_col);
     }
     move_complete();
     return;
