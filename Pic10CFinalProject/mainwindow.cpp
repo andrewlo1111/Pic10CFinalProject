@@ -821,8 +821,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 }
 
-bool MainWindow::is_ally(int current_row, int current_col, int other_row, int other_col)
+bool MainWindow::is_ally(int other_row, int other_col)
 {
+    int current_row = selected_spot[0];
+    int current_col = selected_spot[1];
     if(player_indicator[current_row][current_col] == player_indicator[other_row][other_col])
     {
         return true;
@@ -850,6 +852,15 @@ bool MainWindow::is_enemy(int other_row, int other_col)
     }
 }
 
+bool MainWindow::is_empty(int other_row, int other_col)
+{
+    if(player_indicator[other_row][other_col] == none)
+    {
+        return true;
+    }
+    return false;
+}
+
 bool MainWindow::selecting_empty()
 {
     int row = selected_spot[0];
@@ -874,8 +885,66 @@ void MainWindow::move_complete()
     update_move();
 }
 
-void battle()
+void MainWindow::battle_unit(int other_row, int other_col)
 {
+    Villager v;
+    Warrior w;
+    Archer a;
+    Knight k;
+    int current_row = selected_spot[0];
+    int current_col = selected_spot[1];
+    MainWindow::occupied current_unit = game_board[current_row][current_col];
+    MainWindow::occupied other_unit = game_board[other_row][other_col];
+    Unit attacker;
+    Unit defender;
+    switch(current_unit)
+    {
+        case villager:
+            attacker = v;
+            break;
+        case warrior:
+            attacker = w;
+            break;
+        case archer:
+            attacker = a;
+            break;
+        case knight:
+            attacker = k;
+            break;
+        default:
+            break;
+    }
+    switch(other_unit)
+    {
+        case villager:
+            defender = v;
+            break;
+        case warrior:
+            defender = w;
+            break;
+        case archer:
+            defender = a;
+            break;
+        case knight:
+            defender = k;
+            break;
+        default:
+            break;
+    }
+    if(attacker.win_battle(defender) == true)
+    {
+        game_board[other_row][other_col] = current_unit;
+        game_board[current_row][current_col] = empty;
+        player_indicator[other_row][other_col] = player_indicator[current_row][current_col];
+        player_indicator[current_row][current_col]= none;
+    }
+    else
+    {
+        game_board[current_row][current_col] = empty;
+        player_indicator[current_row][current_col] = none;
+    }
+
+
 
 }
 
@@ -891,17 +960,27 @@ void MainWindow::moveUp()
     }
     int row = selected_spot[0];
     int col = selected_spot[1];
-    if(this->selecting_empty())    //cannot move if selecting empty spot
+    int desired_row = row-1;
+    int desired_col = col;
+    if(this->selecting_empty() || row == 0)    //cannot move if selecting empty spot or on top row
     {
         return;
     }
-    if(row != 0 && is_ally(row, col, row-1, col) == false )    //cannot move up if off board or to ally
+    if(is_ally(desired_row, desired_col) == true)
     {
-        game_board[row -1][col] = game_board[row][col];
+        return;
+    }
+    else if(is_empty(desired_row, desired_col) == true )    //cannot move up if off board or to ally
+    {
+        game_board[desired_row][desired_col] = game_board[row][col];
         game_board[row][col] = empty;
-        player_indicator[row-1][col]= player_indicator[row][col];
+        player_indicator[desired_row][desired_col]= player_indicator[row][col];
         player_indicator[row][col] = none;
         processandRepaint();
+    }
+    else if(is_enemy(desired_row,desired_col) == true)
+    {
+        battle_unit(desired_row, desired_col);
     }
     move_complete();
 
@@ -921,17 +1000,27 @@ void MainWindow::moveDown()
     }
     int row = selected_spot[0];
     int col = selected_spot[1];
-    if(this->selecting_empty())    //cannot move if selecting empty spot
+    int desired_row = row+1;
+    int desired_col = col;
+    if(this->selecting_empty() || row == 5)    //cannot move if selecting empty spot or bottom
     {
         return;
     }
-    if(row!=5 && is_ally(row, col, row+1, col) == false)
+    if(is_ally(desired_row,desired_col) == true)             //cannot move if ally occupies
     {
-        game_board[row + 1][col] = game_board[row][col];
+        return;
+    }
+    else if(is_empty(desired_row, desired_col) == true)
+    {
+        game_board[desired_row][desired_col] = game_board[row][col];
         game_board[row][col] = empty;
-        player_indicator[row+1][col] = player_indicator[row][col];
+        player_indicator[desired_row][desired_col] = player_indicator[row][col];
         player_indicator[row][col] = none;
         processandRepaint();
+    }
+    else if(is_enemy(desired_row,desired_col) == true)
+    {
+        battle_unit(desired_row,desired_col);
     }
     move_complete();
     return;
@@ -949,17 +1038,27 @@ void MainWindow::moveLeft()
     }
     int row = selected_spot[0];
     int col = selected_spot[1];
-    if(this->selecting_empty())    //cannot move if selecting empty spot
+    int desired_row = row;
+    int desired_col = col -1;
+    if(this->selecting_empty() || col == 0)    //cannot move if selecting empty spot or left edge
     {
         return;
     }
-    if(col!=0 && is_ally(row, col, row, col -1) == false)
+    if(is_ally(desired_row, desired_col) == true)
     {
-        game_board[row][col-1] = game_board[row][col];
+        return;
+    }
+    else if(is_empty(desired_row, desired_col) == true)
+    {
+        game_board[desired_row][desired_col] = game_board[row][col];
         game_board[row][col] = empty;
-        player_indicator[row][col-1] = player_indicator[row][col];
+        player_indicator[desired_row][desired_col] = player_indicator[row][col];
         player_indicator[row][col] = none;
         processandRepaint();
+    }
+    else if(is_enemy(desired_row, desired_col)== true)
+    {
+        battle_unit(desired_row, desired_col);
     }
     move_complete();
     return;
@@ -977,17 +1076,27 @@ void MainWindow::moveRight()
     }
     int row = selected_spot[0];
     int col = selected_spot[1];
-    if(this->selecting_empty())    //cannot move if selecting empty spot
+    int desired_row = row;
+    int desired_col = col + 1;
+    if(this->selecting_empty() || col ==5)    //cannot move if selecting empty spot or right edge
     {
         return;
     }
-    if(col!= 5 && is_ally(row, col, row, col+1) == false)
+    if(is_ally(desired_row,desired_col) == true)
     {
-        game_board[row][col+1] = game_board[row][col];
+        return;
+    }
+    else if(is_empty(desired_row, desired_col) == true)
+    {
+        game_board[desired_row][desired_col] = game_board[row][col];
         game_board[row][col] = empty;
-        player_indicator[row][col+1] = player_indicator[row][col];
+        player_indicator[desired_row][desired_col] = player_indicator[row][col];
         player_indicator[row][col] = none;
         processandRepaint();
+    }
+    else if(is_enemy(desired_row, desired_col) == true)
+    {
+        battle_unit(desired_row,desired_col);
     }
     move_complete();
     return;
