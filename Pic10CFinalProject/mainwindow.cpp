@@ -72,7 +72,7 @@ TownCenter::TownCenter()
 
 
 
-Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_center_count(1), unit_list(0), move_count(3)
+Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_center_count(1), unit_count(0), move_count(3)
 {
     QLabel *money_label = new QLabel("Money: 100");
     QLabel *food_label = new QLabel("Food: 100");
@@ -138,9 +138,9 @@ int Player::get_town_center_count()
     return town_center_count;
 }
 
-unsigned int Player::get_unit_count()
+int Player::get_unit_count()
 {
-    return unit_list.size();
+    return unit_count;
 }
 
 std::vector<QLabel*> Player::get_label_arr()
@@ -178,12 +178,11 @@ void Player::train_unit(possible_unit new_unit)
     {
         return;
     }
+    unit_count++;
     switch(new_unit)
     {
     case(villager):
     {
-        Villager v1;
-        unit_list.push_back(v1);
         this->money -= 50;
         this->food -= 50;
         break;
@@ -191,24 +190,18 @@ void Player::train_unit(possible_unit new_unit)
     }
     case(warrior):
     {
-        Warrior w1;
-        unit_list.push_back(w1);
         this->money -= 100;
         this->food -= 100;
         break;
     }
     case(archer):
     {
-        Archer a1;
-        unit_list.push_back(a1);
         this->money -= 100;
         this->food -= 100;
         break;
     }
     case(knight):
     {
-        Knight k1;
-        unit_list.push_back(k1);
         this->money -= 150;
         this->food -= 150;
         break;

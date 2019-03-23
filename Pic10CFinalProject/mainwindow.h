@@ -110,7 +110,7 @@ public:
     int get_farm_count();
     int get_town_center_count();
     int get_move_count();
-    unsigned int get_unit_count();
+    int get_unit_count();
     std::vector<QLabel*> get_label_arr();
 
     bool enough_resources(possible_unit);
@@ -130,8 +130,8 @@ private:
     int mine_count;
     int farm_count;
     int town_center_count;
+    int unit_count;
     std::vector<QLabel*> label_arr;
-    std::vector<Unit> unit_list;
     int move_count;
 
 
