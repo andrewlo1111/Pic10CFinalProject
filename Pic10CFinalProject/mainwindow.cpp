@@ -2,41 +2,21 @@
 #include "ui_mainwindow.h"
 
 
-void Unit::move()
-{
-    if(done == true)
-    {
-        return;
-    }
-    //some action is conducted
-    done = true;
-}
 
-void Unit::defend()
-{
-    if(done == true)
-    {
-        return;
-    }
-    defense *= 1.25;
-    done = true;
-}
 
-void Unit::attack_enemy(Unit other_unit)
+
+
+bool Unit::win_battle(Unit other_unit)
 {
-    if(done == true)
-    {
-        return;
-    }
     if(attack > other_unit.defense)
     {
         //wins battle
-        done = true;
-        return;
+        return true;
     }
     else
     {
         //lose battle and kills/deletes unit
+        return false;
     }
 }
 
@@ -48,11 +28,6 @@ Villager::Villager()
     defense = 0.5;
 }
 
-/*
-void Villager::build(int row, int col)
-{
-    //build the building at specific row and col
-}*/
 
 Warrior::Warrior()
 {
@@ -855,6 +830,26 @@ bool MainWindow::is_ally(int current_row, int current_col, int other_row, int ot
     return false;
 }
 
+bool MainWindow::is_enemy(int other_row, int other_col)
+{
+    int current_row = selected_spot[0];
+    int current_col = selected_spot[1];
+    MainWindow::owner current_owner = player_indicator[current_row][current_col];
+    MainWindow::owner other_owner = player_indicator[other_row][other_col];
+    if(current_owner== player_one && other_owner == player_two)
+    {
+        return true;
+    }
+    else if(current_owner == player_two && other_owner == player_one)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 bool MainWindow::selecting_empty()
 {
     int row = selected_spot[0];
@@ -877,6 +872,11 @@ void MainWindow::move_complete()
         p2.used_move();
     }
     update_move();
+}
+
+void battle()
+{
+
 }
 
 void MainWindow::moveUp()

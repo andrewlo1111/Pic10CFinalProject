@@ -22,16 +22,14 @@
 class Unit
 {
 public:
-    Unit():unit_type("Unit"),attack(1),defense(1),done(false){}
-    void move();
-    void defend();
-    void attack_enemy(Unit other_unit);
+    Unit():unit_type("Unit"),attack(1),defense(1){}
+
+    bool win_battle(Unit other_unit);
 
 protected:
     std::string unit_type;
     double attack;
     double defense;
-    bool done = false;
 
 
 
@@ -41,7 +39,6 @@ class Villager: public Unit
 {
 public:
     Villager();
-    //void build(int row, int col);
 
 };
 
@@ -209,7 +206,9 @@ private:
     MainWindow::occupied convert_to_occupied(Player::possible_unit);
     void change_select(int row, int col);
     bool is_ally(int current_row, int current_col, int other_row, int other_col);
+    bool is_enemy(int other_row, int other_col);
     bool selecting_empty();
+    void battle();
 
 
 };
