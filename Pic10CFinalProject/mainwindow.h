@@ -210,6 +210,7 @@ private:
     bool is_empty(int other_row, int other_col);
     bool selecting_empty();
     void battle_unit(int other_row, int other_col);
+    void attack_building(int other_row, int other_col);
 
 
 };

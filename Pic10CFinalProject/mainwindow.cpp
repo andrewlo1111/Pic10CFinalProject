@@ -885,6 +885,22 @@ void MainWindow::move_complete()
     update_move();
 }
 
+void MainWindow::attack_building(int other_row, int other_col)
+{
+    int current_row = selected_spot[0];
+    int current_col = selected_spot[1];
+    MainWindow::occupied current_unit = game_board[current_row][current_col];
+    if(current_unit == villager)                //villagers cannot destroy buildings
+    {
+        return;
+    }
+    else
+    {
+        game_board[other_row][other_col] = empty;           //building instantly destroyed
+        player_indicator[other_row][other_col] = none;
+    }
+}
+
 void MainWindow::battle_unit(int other_row, int other_col)
 {
     Villager v;
@@ -931,21 +947,18 @@ void MainWindow::battle_unit(int other_row, int other_col)
         default:
             break;
     }
-    if(attacker.win_battle(defender) == true)
+    if(attacker.win_battle(defender) == true)               //if attacker wins then attacker moves to spot of defender and defender is gone
     {
         game_board[other_row][other_col] = current_unit;
         game_board[current_row][current_col] = empty;
         player_indicator[other_row][other_col] = player_indicator[current_row][current_col];
         player_indicator[current_row][current_col]= none;
     }
-    else
+    else                                                    //attacker losing means spot now is empty
     {
         game_board[current_row][current_col] = empty;
         player_indicator[current_row][current_col] = none;
     }
-
-
-
 }
 
 void MainWindow::moveUp()
