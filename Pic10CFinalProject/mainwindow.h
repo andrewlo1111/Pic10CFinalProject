@@ -30,9 +30,6 @@ protected:
     std::string unit_type;
     double attack;
     double defense;
-
-
-
 };
 
 class Villager: public Unit
@@ -59,37 +56,6 @@ class Knight:public Unit
 public:
     Knight();
 };
-
-
-
-class  Building
-{
-public:
-    Building(): building_type("Building"), durability(1) {}
-  protected:
-    std::string building_type;
-    int durability;
-
-};
-
-class Farm: public Building
-{
-public:
-    Farm();
-};
-
-class Mine: public Building
-{
-public:
-    Mine();
-};
-
-class TownCenter: public Building
-{
-public:
-    TownCenter();
-};
-
 
 
 

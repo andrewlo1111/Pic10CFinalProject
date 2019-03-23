@@ -40,7 +40,7 @@ Archer::Archer()
 {
     unit_type = "Archer";
     attack = .75;
-    defense = 1.75;
+    defense = 1.5;
 }
 
 Knight::Knight()
@@ -49,28 +49,6 @@ Knight::Knight()
     attack = 2;
     defense = .75;
 }
-
-
-
-Mine::Mine()
-{
-    building_type = "Mine";
-    durability = 1;
-}
-
-Farm::Farm()
-{
-    building_type = "Farm";
-    durability = 1;
-}
-
-TownCenter::TownCenter()
-{
-    building_type = "TownCenter";
-    durability = 2;
-}
-
-
 
 Player::Player():money(100), food(100), mine_count(0), farm_count(0), town_center_count(1), unit_count(0), move_count(3)
 {
