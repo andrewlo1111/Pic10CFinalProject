@@ -132,6 +132,7 @@ public slots:
     void p1_train_unit();
     void p2_train_unit();
     void hide_build_window();
+    void check_lose();
 
     void moveCursorUp();
     void moveCursorDown();
@@ -159,6 +160,8 @@ private:
     int selected_spot[2];                                   //first element will be row, second element will be column
     int cursor[2];                                          //first element is row, second element is column
     QWidget *build_window = new QWidget;
+    QLabel *commentary = new QLabel;
+    QWidget *commentary_window = new QWidget;
 
 
     //painting functions
@@ -174,6 +177,7 @@ private:
 
     //helper functions
     MainWindow::occupied convert_to_occupied(Player::possible_unit);
+    QString convert_to_string(MainWindow::occupied);
     void change_select(int row, int col);
     bool is_ally(int other_row, int other_col);
     bool is_enemy(int other_row, int other_col);

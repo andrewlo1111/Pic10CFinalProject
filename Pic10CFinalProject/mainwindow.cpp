@@ -2,10 +2,6 @@
 #include "ui_mainwindow.h"
 
 
-
-
-
-
 bool Unit::win_battle(Unit other_unit)
 {
     if(attack > other_unit.defense)
@@ -133,7 +129,7 @@ int Player::get_move_count()
 
 bool Player::lose()
 {
-    if(get_unit_count() == 0 && town_center_count == 0 )
+    if(unit_count == 0 && town_center_count == 0)
     {
         return true;
     }
@@ -262,6 +258,7 @@ bool Player::enough_resources(possible_unit unit)
 
 void MainWindow::end_turn_rewards(int player)
 {
+    QString display_text;
     if (player == 0)                                    //when player 2 ends turn
     {
         p1.add_money(p1.get_mine_count() * 100 + p1.get_town_center_count() *50);
@@ -271,8 +268,9 @@ void MainWindow::end_turn_rewards(int player)
         p1.reset_move();
         p1_turn = true;
         update_labels(player);
+        display_text = "Player 2 ends turn";
     }
-    if (player == 1)                                   //when player1 ends turn
+    else if (player == 1)                                   //when player1 ends turn
     {
         p2.add_money(p2.get_mine_count() * 100 + p2.get_town_center_count() * 50);
         p2.add_food(p2.get_farm_count() * 100 + p2.get_town_center_count() * 50);
@@ -281,7 +279,9 @@ void MainWindow::end_turn_rewards(int player)
         p2.reset_move();
         p1_turn = false;
         update_labels(player);
+        display_text = "Player 1 ends turn";
     }
+    commentary->setText(display_text);
 
 }
 
@@ -323,6 +323,24 @@ void MainWindow::update_labels(int player)
             label_vector[i]->setText(text_arr[i]);
         }
     }
+}
+
+void MainWindow::check_lose()
+{
+    QString lose_text;
+    if(p1.lose() == true)
+    {
+        lose_text = "Game Over!!! Player 2 Wins !!!";
+    }
+    else if(p2.lose() == true)
+    {
+        lose_text = "Game Over!!! Player 1 Wins !!!";
+    }
+    else
+    {
+        return;
+    }
+    commentary->setText(lose_text);
 }
 
 void MainWindow::update_move()
@@ -566,6 +584,37 @@ MainWindow::occupied MainWindow::convert_to_occupied(Player::possible_unit poten
     }
 }
 
+QString MainWindow::convert_to_string(MainWindow::occupied unit)
+{
+    QString unit_name;
+    switch(unit)
+    {
+        case(villager):
+            unit_name = "Villager";
+            break;
+        case(warrior):
+            unit_name = "Warrior";
+            break;
+        case(archer):
+            unit_name = "Archer";
+            break;
+        case(knight):
+            unit_name = "Knight";
+            break;
+        case(town_center):
+            unit_name = "Town Center";
+            break;
+        case(mine):
+            unit_name = "Mine";
+            break;
+        case(farm):
+            unit_name = "Farm";
+            break;
+        default:
+            break;
+    }
+    return unit_name;
+}
 
 
 void MainWindow::p1_train_unit()
@@ -575,9 +624,9 @@ void MainWindow::p1_train_unit()
     {
         return;
     }
-    auto train = [this](int row, int col) {
+    MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
+    auto train = [this,new_unit](int row, int col) {
         p1.train_unit(potential_unit);
-        MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
         game_board[row][col] = new_unit;
         player_indicator[row][col] = player_one;
         processandRepaint();
@@ -590,6 +639,8 @@ void MainWindow::p1_train_unit()
     {
         train(0,1);
     }
+    QString display_text("Player 1 trains " + convert_to_string(new_unit));
+    commentary->setText(display_text);
 }
 
 void MainWindow::p2_train_unit()
@@ -598,9 +649,9 @@ void MainWindow::p2_train_unit()
     {
         return;
     }
-    auto train = [this](int row, int col){
+    MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
+    auto train = [this, new_unit](int row, int col){
         p2.train_unit(potential_unit);
-        MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
         game_board[row][col] = new_unit;
         player_indicator[row][col] = player_two;
         processandRepaint();
@@ -613,10 +664,8 @@ void MainWindow::p2_train_unit()
     {
         train(4,5);
     }
-    else
-    {
-        return;
-    }
+    QString display_text("Player 2 trains " + convert_to_string(new_unit));
+    commentary->setText(display_text);
 }
 
 void MainWindow::build_mine()
@@ -633,6 +682,8 @@ void MainWindow::build_mine()
             p1.buildMine();
             game_board[cursor_row][cursor_col] = mine;              //build at location of cursor
             player_indicator[cursor_row][cursor_col] = player_one;
+            QString display_text("Player 1 builds mine");
+            commentary->setText(display_text);
             processandRepaint();
         }
         else
@@ -640,6 +691,8 @@ void MainWindow::build_mine()
             p2.buildMine();
             game_board[cursor_row][cursor_col] = mine;
             player_indicator[cursor_row][cursor_col] = player_two;
+            QString display_text("Player 2 builds mine");
+            commentary->setText(display_text);
             processandRepaint();
         }
    }
@@ -659,6 +712,8 @@ void MainWindow::build_farm()
             p1.buildFarm();
             game_board[cursor_row][cursor_col] = farm;              //build at location of cursor
             player_indicator[cursor_row][cursor_col] = player_one;
+            QString display_text("Player 1 builds farm");
+            commentary->setText(display_text);
             processandRepaint();
         }
         else
@@ -666,6 +721,8 @@ void MainWindow::build_farm()
             p2.buildFarm();
             game_board[cursor_row][cursor_col] = farm;
             player_indicator[cursor_row][cursor_col] = player_two;
+            QString display_text("Player 2 builds farm");
+            commentary->setText(display_text);
             processandRepaint();
         }
    }
@@ -685,6 +742,8 @@ void MainWindow::build_TC()
             p1.buildTC();
             game_board[cursor_row][cursor_col] = town_center;              //build at location of cursor
             player_indicator[cursor_row][cursor_col] = player_one;
+            QString display_text("Player 1 built town center");
+            commentary->setText(display_text);
             processandRepaint();
         }
         else
@@ -692,6 +751,8 @@ void MainWindow::build_TC()
             p2.buildTC();
             game_board[cursor_row][cursor_col] = town_center;
             player_indicator[cursor_row][cursor_col] = player_two;
+            QString display_text("Player 2 built town center");
+            commentary->setText(display_text);
             processandRepaint();
         }
    }
@@ -936,6 +997,8 @@ void MainWindow::attack_building(int other_row, int other_col)
         }
         game_board[other_row][other_col] = empty;           //building instantly destroyed
         player_indicator[other_row][other_col] = none;
+        QString display_text(convert_to_string(current_unit) + " destroys " + convert_to_string(destroyed) );
+        commentary->setText(display_text);
     }
 }
 
@@ -999,6 +1062,8 @@ void MainWindow::attack_unit(int other_row, int other_col)
         {
             p1.unit_died();
         }
+        QString display_text(convert_to_string(current_unit) + " defeats " + convert_to_string(other_unit));
+        commentary->setText(display_text);
     }
     else                                                    //attacker losing means spot now is empty
     {
@@ -1012,6 +1077,8 @@ void MainWindow::attack_unit(int other_row, int other_col)
         {
             p2.unit_died();
         }
+        QString display_text(convert_to_string(current_unit) + "loses to " + convert_to_string(other_unit));
+        commentary->setText(display_text);
     }
 }
 
@@ -1039,10 +1106,13 @@ void MainWindow::moveUp()
     }
     else if(is_empty(desired_row, desired_col) == true )    //cannot move up if off board or to ally
     {
-        game_board[desired_row][desired_col] = game_board[row][col];
+        MainWindow::occupied current_unit = game_board[row][col];
+        game_board[desired_row][desired_col] = current_unit;
         game_board[row][col] = empty;
         player_indicator[desired_row][desired_col]= player_indicator[row][col];
         player_indicator[row][col] = none;
+        QString display_text(convert_to_string(current_unit) + " moves up");
+        commentary->setText(display_text);
         processandRepaint();
     }
     else if(is_enemy(desired_row,desired_col) == true)
@@ -1079,10 +1149,13 @@ void MainWindow::moveDown()
     }
     else if(is_empty(desired_row, desired_col) == true)
     {
-        game_board[desired_row][desired_col] = game_board[row][col];
+        MainWindow::occupied current_unit = game_board[row][col];
+        game_board[desired_row][desired_col] = current_unit;
         game_board[row][col] = empty;
         player_indicator[desired_row][desired_col] = player_indicator[row][col];
         player_indicator[row][col] = none;
+        QString display_text(convert_to_string(current_unit) + " moves down");
+        commentary->setText(display_text);
         processandRepaint();
     }
     else if(is_enemy(desired_row,desired_col) == true)
@@ -1117,10 +1190,13 @@ void MainWindow::moveLeft()
     }
     else if(is_empty(desired_row, desired_col) == true)
     {
-        game_board[desired_row][desired_col] = game_board[row][col];
+        MainWindow::occupied current_unit = game_board[row][col];
+        game_board[desired_row][desired_col] = current_unit;
         game_board[row][col] = empty;
         player_indicator[desired_row][desired_col] = player_indicator[row][col];
         player_indicator[row][col] = none;
+        QString display_text(convert_to_string(current_unit) + " moves left");
+        commentary->setText(display_text);
         processandRepaint();
     }
     else if(is_enemy(desired_row, desired_col)== true)
@@ -1155,10 +1231,13 @@ void MainWindow::moveRight()
     }
     else if(is_empty(desired_row, desired_col) == true)
     {
-        game_board[desired_row][desired_col] = game_board[row][col];
+        MainWindow::occupied current_unit = game_board[row][col];
+        game_board[desired_row][desired_col] = current_unit;
         game_board[row][col] = empty;
         player_indicator[desired_row][desired_col] = player_indicator[row][col];
         player_indicator[row][col] = none;
+        QString display_text(convert_to_string(current_unit) + " moves right");
+        commentary->setText(display_text);
         processandRepaint();
     }
     else if(is_enemy(desired_row, desired_col) == true)
@@ -1180,7 +1259,7 @@ MainWindow::MainWindow(QWidget *parent) :
     p1_turn = true;
     cursor[0] = 0;                  //sets base cursor at top left
     cursor[1] = 0;
-    selected_spot[0] = 0;
+    selected_spot[0] = 0;           //selects towncenter at start
     selected_spot[1] = 0;
     for(int row = 0;row<6;row++)     //setup for board at very start of the game
     {
@@ -1203,6 +1282,16 @@ MainWindow::MainWindow(QWidget *parent) :
             }
         }
     }
+    QString start_text("Welcome! Player 1 begins");
+    commentary->setText(start_text);
+    QFont commentary_font = commentary->font();
+    commentary_font.setPointSize(15);
+    commentary->setFont(commentary_font);
+
+    QWidget *commentary_window = new QWidget;
+    QVBoxLayout *commentary_lay = new QVBoxLayout;
+    commentary_lay->addWidget(commentary);
+    commentary_window->setLayout(commentary_lay);
 
     QStackedWidget *control_window = new QStackedWidget;
 
@@ -1314,31 +1403,10 @@ MainWindow::MainWindow(QWidget *parent) :
     control_window->addWidget(player_one_info);
     control_window->addWidget(player_two_info);
 
-    QPushButton *move_up_but = new QPushButton("Up");
-    QPushButton *move_down_but = new QPushButton("Down");
-    QPushButton *move_left_but = new QPushButton("Left");
-    QPushButton *move_right_but = new QPushButton("Right");
-    QPushButton *enter_button = new QPushButton("Enter");
-
-    QPushButton* move_arr[5] = {move_up_but, move_down_but, move_left_but, move_right_but,  enter_button};
-    QObject::connect(move_arr[0], SIGNAL(clicked()), this, SLOT(moveUp()));
-    QObject::connect(move_arr[1], SIGNAL(clicked()), this, SLOT(moveDown()));
-    QObject::connect(move_arr[2], SIGNAL(clicked()), this, SLOT(moveLeft()));
-    QObject::connect(move_arr[3], SIGNAL(clicked()), this, SLOT(moveRight()));
-    QObject::connect(move_arr[4], SIGNAL(clicked()), this, SLOT(select_to_cursor()));
-
-    QWidget *move_window = new QWidget;
-    QHBoxLayout *move_lay = new QHBoxLayout;
-    for(int i=0;i<5;i++)
-    {
-        move_lay->addWidget(move_arr[i]);
-    }
-    move_window->setLayout(move_lay);
-    move_window->show();
-
-
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),control_window,SLOT(setCurrentIndex(int)));
     QObject::connect(end_turn_buttons,SIGNAL(buttonClicked(int)),this, SLOT(end_turn_rewards(int)));
+    QObject::connect(p1_end_turn_button, SIGNAL(clicked()), this, SLOT(check_lose()));
+    QObject::connect(p2_end_turn_button, SIGNAL(clicked()), this, SLOT(check_lose()));
 
 
     QObject::connect(select_unit, SIGNAL(currentIndexChanged(QString)), this, SLOT(choosingUnit(QString)));
@@ -1348,6 +1416,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(p2_train_unit_button, SIGNAL(clicked()), this, SLOT(p2_train_unit()));
 
     QObject::connect(train_unit_buttons, SIGNAL(buttonClicked(int)), this, SLOT(update_labels(int)));
+
+    commentary_window->setGeometry(200,100,200,200);
+    commentary_window->show();
 
     control_window->setGeometry(300,200,300,200);
     control_window->show();
