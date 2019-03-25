@@ -24,10 +24,13 @@ Knights have 2 attack and .75 defense.
  This game is created using Qt Creator. 
  Resources used:
  1. Use of Stacked Widget
- https://doc.qt.io/archives/qt-4.8/qstackedwidget.html
+ https://doc.qt.io/archives/qt-4.8/qstackedwidget.html#addWidget
+ https://doc.qt.io/archives/qt-4.8/qstackedwidget.html#currentIndex-prop
  
  2. Use of QButtonGroup
  https://doc.qt.io/archives/qt-4.8/qbuttongroup.html
+ https://doc.qt.io/archives/qt-4.8/qbuttongroup.html#addButton
+ https://doc.qt.io/archives/qt-4.8/qbuttongroup.html#buttonClicked-2
  
  3. QPainter
  https://doc.qt.io/qt-5/qpainter.html
@@ -51,12 +54,11 @@ Knights have 2 attack and .75 defense.
  
  
 Progress throughout the project:
+
  At the very start of the project, it was rather simple as I just created basic classes that laid down the foundation for what encompass
- the basic concepts of the game such as unit stats and the existence of units and buildings. Then, a control window was created in the 
- main file which displayed the amount of resources that a player has. Following this, when trying to alternate between windows for 
- player 1 and player two, I realized that I could not successfully connect a QPushButton with the clicked signal with the change index 
- slot for the stacked widget object. In order to combat this problem, I looked into the QButtonGroup and was able to group two push
- buttons together to allow for the changing of stacked widgets. 
+ the basic concepts of the game such as unit stats and the existence of units and buildings. Units have the ability to simply move and attack with their own unique set of attack and defense stats. Therefore, the base class unit was used while the villager with its unique build function, warrior, archer, and knight inherited these aspects. The building class was similar with the town center, mine, and farm class inheriting it. However, this class was later removed as it proved to be useless. The player class was created to keep track of all the things the player controls in the game. 
+ 
+ Then, a control window was created in the main file which displayed the amount of resources that a player has. Following this, when  trying to alternate between windows for player 1 and player two, I realized that I could not successfully connect a QPushButton with the clicked signal with the change index slot for the stacked widget object. In order to combat this problem, I looked into the QButtonGroup and was able to group two push buttons together to allow for the changing of stacked widgets. 
  
  Afterwards, I wrote the update slots for the different resources and buildings. However, after writing the update slots I realized that
  in order to use the update slots in conjunction with the update label slots that would accompany the changes with the update resources,
@@ -112,5 +114,9 @@ Progress throughout the project:
  
  Now, the last significant aspect of the game needed to be completed was the battle between units. Instead of giving the player the choice to start a battle through a button, I felt that it would streamline movement if battle was just initiated through moving to a spot where the other player's unit is. This helped simplify code since I would not have to create another pop up window and it also reduced the number of actions a user needs to battle an enemy.
  
- After the battle aspect of the game was completed, I decided to also add a commentary window. The main purpose of this window was for the user to know what was done, but it was also useful as a debugging mechanism. The commentary window lets me know whether a specific action is completed and so if something goes differently in the game than expected, I can trace back to the specific part needed to ease my troubleshooting process. In order to have one single line, that is just constantly changing depending on the action, I made QLabel one of my private variables ensuring that scope was maintained within the class and that I would not have to constantly make a new QLabel object. 
+ After the battle aspect of the game was completed, I decided to also add a commentary window. The main purpose of this window was for the user to know what was done, but it was also useful as a debugging mechanism. The commentary window lets me know whether a specific action is completed and so if something goes differently in the game than expected, I can trace back to the specific part needed to ease my troubleshooting process. In order to have one single line, that is just constantly changing depending on the action, I made QLabel one of my private variables ensuring that scope was maintained within the class and that I would not have to constantly make a new QLabel object. For example, this led me to realize that there was no restrictions when it came to creating buildings.
  
+ Overall, I was able to achieve almost all my goals in constructing this game with the exception of using images to represent the various units and buildings which I simply replaced with letters. 
+ 
+ Takeaways:
+ From this project, one of the most important things I learned was to have a clear idea and plan of what my project is going to look like. For certain aspects when I did not know how to truly integrate certain aspects, I blindly wrote the code without any concern for its future implications. This led to a lot of extraneous code that ultimately wasted my time. In addition, I realized the importance of having a good sense of organization for code as when projects get extremely long, they can be difficult to manage. I also ended up developing a lot of practice in reading documentation. Since I was exploring a lot of new functions or classes from Qt that were not taught in class, I had to use the qt website and read its documentation to get an understanding of the function and how to apply it to my code. 
