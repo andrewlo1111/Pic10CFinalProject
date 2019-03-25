@@ -63,6 +63,7 @@ class Player
 {
 public:
     enum possible_unit {villager, warrior, archer, knight};
+    enum possible_building {town_center, mine, farm};
 
     Player();
 
@@ -79,7 +80,8 @@ public:
     int get_unit_count();
     std::vector<QLabel*> get_label_arr();
 
-    bool enough_resources(possible_unit);
+    bool enough_unit_resources(possible_unit);
+    bool enough_build_resources(possible_building);
     bool lose();
 
 
@@ -161,7 +163,6 @@ private:
     int cursor[2];                                          //first element is row, second element is column
     QWidget *build_window = new QWidget;
     QLabel *commentary = new QLabel;
-    QWidget *commentary_window = new QWidget;
 
 
     //painting functions
@@ -186,6 +187,7 @@ private:
     void attack(int other_row, int other_col);
     void attack_unit(int other_row, int other_col);
     void attack_building(int other_row, int other_col);
+
 
 
 };

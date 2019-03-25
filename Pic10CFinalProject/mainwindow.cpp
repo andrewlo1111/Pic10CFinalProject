@@ -168,7 +168,7 @@ void Player::unit_died()
 
 void Player::train_unit(possible_unit new_unit)
 {
-    if(enough_resources(new_unit)== false)
+    if(enough_unit_resources(new_unit)== false)
     {
         return;
     }
@@ -214,7 +214,7 @@ void Player::reset_move()
     move_count = 3;
 }
 
-bool Player::enough_resources(possible_unit unit)
+bool Player::enough_unit_resources(possible_unit unit)
 {
     switch(unit)
     {
@@ -385,9 +385,11 @@ void MainWindow::change_select(int row, int col)
 
         this->build_window->setLayout(build_lay);
         this->build_window->show();
+
     }
 
-    else {
+    else
+    {
         this->build_window->hide();
     }
 
@@ -620,8 +622,11 @@ QString MainWindow::convert_to_string(MainWindow::occupied unit)
 void MainWindow::p1_train_unit()
 {
 
-    if(p1.enough_resources(potential_unit) == false)
+    if(p1.enough_unit_resources(potential_unit) == false)
     {
+        MainWindow::occupied training_unit = convert_to_occupied(potential_unit);
+        QString text("Insufficient resources to train " + convert_to_string(training_unit));
+        commentary->setText(text);
         return;
     }
     MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
@@ -645,8 +650,11 @@ void MainWindow::p1_train_unit()
 
 void MainWindow::p2_train_unit()
 {
-    if(p2.enough_resources(potential_unit) == false)
+    if(p2.enough_unit_resources(potential_unit) == false)
     {
+        MainWindow::occupied training_unit = convert_to_occupied(potential_unit);
+        QString text("Insufficient resources to train " + convert_to_string(training_unit));
+        commentary->setText(text);
         return;
     }
     MainWindow::occupied new_unit = convert_to_occupied(potential_unit);
@@ -668,6 +676,32 @@ void MainWindow::p2_train_unit()
     commentary->setText(display_text);
 }
 
+bool Player::enough_build_resources(possible_building building)
+{
+    switch(building)
+    {
+        case town_center:
+            if(money < 150 || food < 150)
+            {
+                return false;
+            }
+            break;
+        case mine:
+            if(money < 100 || food < 100)
+            {
+                return false;
+            }
+            break;
+        case farm:
+            if(money < 100 || food < 100)
+            {
+                return false;
+            }
+            break;
+    }
+    return true;
+}
+
 void MainWindow::build_mine()
 {
     int cursor_row = cursor[0];
@@ -679,21 +713,35 @@ void MainWindow::build_mine()
     {
         if(p1_turn == true )
         {
+            if(p1.enough_build_resources(Player::mine) == false)
+            {
+                QString text("Insufficient resources to build mine");
+                commentary->setText(text);
+                return;
+            }
             p1.buildMine();
             game_board[cursor_row][cursor_col] = mine;              //build at location of cursor
             player_indicator[cursor_row][cursor_col] = player_one;
             QString display_text("Player 1 builds mine");
             commentary->setText(display_text);
             processandRepaint();
+            update_labels(1);
         }
         else
         {
+            if(p2.enough_build_resources(Player::mine) == false)
+            {
+                QString text("Insufficient resources to build mine");
+                commentary->setText(text);
+                return;
+            }
             p2.buildMine();
             game_board[cursor_row][cursor_col] = mine;
             player_indicator[cursor_row][cursor_col] = player_two;
             QString display_text("Player 2 builds mine");
             commentary->setText(display_text);
             processandRepaint();
+            update_labels(0);
         }
    }
 }
@@ -709,6 +757,12 @@ void MainWindow::build_farm()
     {
         if(p1_turn == true )
         {
+            if(p1.enough_build_resources(Player::farm) == false)
+            {
+                QString text("Insufficient resources to build farm");
+                commentary->setText(text);
+                return;
+            }
             p1.buildFarm();
             game_board[cursor_row][cursor_col] = farm;              //build at location of cursor
             player_indicator[cursor_row][cursor_col] = player_one;
@@ -718,6 +772,12 @@ void MainWindow::build_farm()
         }
         else
         {
+            if(p2.enough_build_resources(Player::farm) == false)
+            {
+                QString text("Insufficient resources to build farm");
+                commentary->setText(text);
+                return;
+            }
             p2.buildFarm();
             game_board[cursor_row][cursor_col] = farm;
             player_indicator[cursor_row][cursor_col] = player_two;
@@ -739,6 +799,12 @@ void MainWindow::build_TC()
     {
         if(p1_turn == true )
         {
+            if(p1.enough_build_resources(Player::town_center) == false)
+            {
+                QString text("Insufficient resources to build town center");
+                commentary->setText(text);
+                return;
+            }
             p1.buildTC();
             game_board[cursor_row][cursor_col] = town_center;              //build at location of cursor
             player_indicator[cursor_row][cursor_col] = player_one;
@@ -748,6 +814,12 @@ void MainWindow::build_TC()
         }
         else
         {
+            if(p2.enough_build_resources(Player::town_center) == false)
+            {
+                QString text("Insufficient resources to build town center");
+                commentary->setText(text);
+                return;
+            }
             p2.buildTC();
             game_board[cursor_row][cursor_col] = town_center;
             player_indicator[cursor_row][cursor_col] = player_two;
