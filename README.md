@@ -3,12 +3,16 @@
 PIC10C Game
 Variation of a turn based war game. In this game, using food and gold resources, a player must build an army to conquer their opponent.
 Villagers are used to build buildings that will get you resources.
+
  -Mines: provide 100 gold per end turn
- -Farms: provide 100 food per end turn
- -town center: provide 50 gold and 50 food per end turn
- Warriors have 1 attack and 1 defense.
- Archers have .75 attack and 1.5 defense.
- Knights have 2 attack and .75 defense.
+
+-Farms: provide 100 food per end turn
+
+-town center: provide 50 gold and 50 food per end turn
+
+Warriors have 1 attack and 1 defense.
+Archers have .75 attack and 1.5 defense.
+Knights have 2 attack and .75 defense.
  
  Battle:
  - if attacker's attack is higher than defender's defense then attacker wins battle
@@ -62,27 +66,27 @@ Progress throughout the project:
  The next task was to create a train unit button that would be reflected to each specific player. Initially, I was unable to push back 
  the variety of units into the unit list of each player. This was resolved by adding the keyword public in front of unit when inheriting
  the properities of unit into the warrior, archer, and knight class. At this time, I also decided to readjust the display of the control
- window. I looked into QFont and also QLabel to figure out how to change the alignment and the size of the text for the labels. The final
- aspect to the training unit required selecting which unit would be trained. I decided to use a QComboBox to prevent the possibility of 
- any input errors. 
+ window. I looked into QFont and also QLabel to figure out how to change the alignment and the size of the text for the labels. The 
+ final aspect to the training unit required selecting which unit would be trained. I decided to use a QComboBox to prevent the 
+ possibility of any input errors. 
  
- In order to see the results of the actions taken and allow a user to interact with the game I was created, it was crucial that I be able
- to use the paintEvent function. Initially, I was unable to paint anything. After looking into the example of another use of QPaintEvent,
- I realized that the private function must still be named paintEvent as it is being overloaded so I simply renamed the function name and
- I was able to successfully paint the event. 
+ In order to see the results of the actions taken and allow a user to interact with the game I was created, it was crucial that I be 
+ able to use the paintEvent function. Initially, I was unable to paint anything. After looking into the example of another use of 
+ QPaintEvent, I realized that the private function must still be named paintEvent as it is being overloaded so I simply renamed the 
+ function name and I was able to successfully paint the event. 
  
  Next, I continued to expand on my train unit functionality establishing villager as the default. I created a unit count label with the 
- ability to update and also attempted to draw an image I downloaded to represent the unit I trained. The exact location to which the unit
- would be drawn at would be decided in the space it fills in a 6 x 6 game board array that represent the rows and columns. However, since
- I was unable to successfully draw an image, my workaround was simply using simple things that QPainter could already draw. I used a 
- filled in circle to represent a town center and letters to correspond to the unit or building created. 
+ ability to update and also attempted to draw an image I downloaded to represent the unit I trained. The exact location to which the  
+ unit would be drawn at would be decided in the space it fills in a 6 x 6 game board array that represent the rows and columns. However, 
+ since I was unable to successfully draw an image, my workaround was simply using simple things that QPainter could already draw. I used 
+ a filled in circle to represent a town center and letters to correspond to the unit or building created. 
  
  One of the problems with the game board was that they only represented the unit or building type. However, it did not reflect who
  had control of the unit. I felt that it would be too long of an enumeration declaration if I established each unit and building type 
  with their own player one and player two version. In order to solve this issue, I decided to make a 6x6 array similar to the game board
  array but instead this one would simply indicate whether the spot was occupied by player one, player two and none. The 6 x 6 arrays
- were synced up so a given row and column could provide information concerning the unit or building type from the game board and who owns
- that specific unit using the player indicator. 
+ were synced up so a given row and column could provide information concerning the unit or building type from the game board and who    
+ owns that specific unit using the player indicator. 
  
  As I reviewed some of my code, I felt that I could optimize some of the more repetitive aspects. For example, instead of just
  manually adding items into the combo box for training units, I decided to use a lambda function for both player one and player two
@@ -96,12 +100,17 @@ Progress throughout the project:
  it would not be clear as to which unit should move. As a result, I introduced both a selected and cursor aspect to the board. The 
  cursor is denoted by a yellow square and a selected spot is denoted by a green square. The cursor is free to move around and when 
  pressing the enter key to a location owned by the player whose turn it is, the selected spot will move to where the cursor is. 
- For the selected unit, you can move left, right, up, or down as long as it does not make the unit go off the board. At first, it started
- through a set of move buttons, but was later expanded to allow for the arrow keys to improve ease of use.
+ For the selected unit, you can move left, right, up, or down as long as it does not make the unit go off the board. At first, it  
+ started through a set of move buttons, but was later expanded to allow for the arrow keys to improve ease of use.
  
  The villager class is unique compared to the other units in that it has the ability to build. As a result, I created a window that is 
  displayed only when the villager is selected. This window gives the choice to move or build. If move is clicked, then the window closes
  and moving is normal for the villager. However, if one of the build buttons is clicked, the corresponding building is created at the 
  location in which the cursor is located. The building will only be built if the cursor is adjacent to the unit. 
  
+ In order to speed up the pace of the game I decided to introduce a move count. For each given turn, a player gets 3 moves. It will then  reset at the end of the turn. This move count was something that the player should be able to see so I added it to the display window. While adding in the move count, I realized that the unit count was essentially useless as anybody could ese how many units they actually had, so I replaced the location where the unit count lable was with the move count. 
+ 
+ Now, the last significant aspect of the game needed to be completed was the battle between units. Instead of giving the player the choice to start a battle through a button, I felt that it would streamline movement if battle was just initiated through moving to a spot where the other player's unit is. This helped simplify code since I would not have to create another pop up window and it also reduced the number of actions a user needs to battle an enemy.
+ 
+ After the battle aspect of the game was completed, I decided to also add a commentary window. The main purpose of this window was for the user to know what was done, but it was also useful as a debugging mechanism. The commentary window lets me know whether a specific action is completed and so if something goes differently in the game than expected, I can trace back to the specific part needed to ease my troubleshooting process. In order to have one single line, that is just constantly changing depending on the action, I made QLabel one of my private variables ensuring that scope was maintained within the class and that I would not have to constantly make a new QLabel object. 
  
