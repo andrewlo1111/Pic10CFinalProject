@@ -254,7 +254,31 @@ bool Player::enough_unit_resources(possible_unit unit)
     return true;
 }
 
-
+bool Player::enough_build_resources(possible_building building)
+{
+    switch(building)
+    {
+        case town_center:
+            if(money < 150 || food < 150)
+            {
+                return false;
+            }
+            break;
+        case mine:
+            if(money < 100 || food < 100)
+            {
+                return false;
+            }
+            break;
+        case farm:
+            if(money < 100 || food < 100)
+            {
+                return false;
+            }
+            break;
+    }
+    return true;
+}
 
 void MainWindow::end_turn_rewards(int player)
 {
@@ -674,32 +698,6 @@ void MainWindow::p2_train_unit()
     }
     QString display_text("Player 2 trains " + convert_to_string(new_unit));
     commentary->setText(display_text);
-}
-
-bool Player::enough_build_resources(possible_building building)
-{
-    switch(building)
-    {
-        case town_center:
-            if(money < 150 || food < 150)
-            {
-                return false;
-            }
-            break;
-        case mine:
-            if(money < 100 || food < 100)
-            {
-                return false;
-            }
-            break;
-        case farm:
-            if(money < 100 || food < 100)
-            {
-                return false;
-            }
-            break;
-    }
-    return true;
 }
 
 void MainWindow::build_mine()
